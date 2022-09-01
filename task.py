@@ -93,13 +93,13 @@ class Application(tk.Frame):
         if event.keysym == "Return":
             if str(self.ans) == self.ans_label2["text"]:
                 # logに書き込み
-                self.log(self.ans_label2["text"], "concentrate", "○", False)
+                self.log(self.ans_label2["text"], "concentrate", "correct", False)
 
                 self.result_label.configure(text="正解！", fg="red")
                 self.correct_cnt += 1
             else:
                 # logに書き込み
-                self.log(self.ans_label2["text"], "concentrate", "×", False)
+                self.log(self.ans_label2["text"], "concentrate", "miss", False)
 
                 self.result_label.configure(text="残念！", fg="blue")
 
