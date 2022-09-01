@@ -150,7 +150,7 @@ class Application(tk.Frame):
         if flag:
             # log書き出し
             dt_now = datetime.datetime.now()
-            self.df.to_csv(".\\log\\{}.csv".format(dt_now.strftime('%Y-%m-%d-%H-%M-%S')), index=False)
+            self.df.to_csv(".\\log_dir\\{}.csv".format(dt_now.strftime('%Y-%m-%d-%H-%M-%S')), index=False)
 
 
 
