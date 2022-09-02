@@ -111,7 +111,7 @@ class Application(tk.Frame):
                 self.correct_cnt += 1
             else:
                 # logに書き込み
-                self.log(self.ans_label2["text"], self.ans,"concentrate", "incorrect", False)
+                self.log(self.ans_label2["text"], self.ans,"concentrate", "miss", False)
 
                 self.result_label.configure(text="残念！", fg="blue")
 
@@ -123,11 +123,11 @@ class Application(tk.Frame):
             # 2分経ったら
             if self.second == 10:
                 self.flg = False
-                self.q_label2.configure(text="終了！")
+                self.q_label2.configure(text="")
                 messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
 
                 # logに書き込み
-                self.log("end", "-","-", "-", True)
+                self.log("-", "-","relax", "-", False)
                 #sys.exit(0)
                 self.movie(root)
 
