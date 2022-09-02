@@ -1,6 +1,6 @@
 import tkinter as tk
-from tkinter import messagebox
 import sys
+import keyboard
 import time
 import threading
 import random
@@ -34,6 +34,14 @@ def QUESTION():
 
     return ans, question
 
+def movie(root):
+    root.frame = tk.Label(root)
+    root.frame.pack()
+    video.openfile("./relax.mp4",root.frame)
+    audio.openfile("./relax.wav")
+
+    audio.play()
+    video.play()
 
 class Application(tk.Frame):
     def __init__(self, master):
@@ -41,7 +49,8 @@ class Application(tk.Frame):
         self.pack()
 
         #master.geometry("1280x720")
-        master.state("zoomed")
+        #master.state("zoomed")
+        root.attributes('-fullscreen', True)
         master.title("タイピングゲーム！")
 
         # 問題数インデックス
@@ -79,23 +88,39 @@ class Application(tk.Frame):
 
     # ウィジェットの生成と配置
     def create_widgets(self):
-        self.q_label = tk.Label(self, text="お題：", font=("",20))
-        self.q_label.grid(row=0, column=0)
+
+        self.ans_label2 = tk.Label(self, text="", width=10, anchor="w", font=("",40))
+        self.ans_label2.grid(row=0, column=0)
+        self.q_label = tk.Label(self, text="お題：", font=("",40))
+        self.q_label.grid(row=1, column=0)
 
         # 問題作成
         self.ans, q = QUESTION()
-        self.q_label2 = tk.Label(self, text=q, width=10, anchor="w", font=("",20))
-        self.q_label2.grid(row=0, column=1)
-        self.ans_label = tk.Label(self, text="解答：", font=("",20))
-        self.ans_label.grid(row=1, column=0)
-        self.ans_label2 = tk.Label(self, text="", width=10, anchor="w", font=("",20))
-        self.ans_label2.grid(row=1, column=1)
-        self.result_label = tk.Label(self, text="", font=("",20))
-        self.result_label.grid(row=2, column=0, columnspan=2)
+        self.q_label2 = tk.Label(self, text=q, width=20, anchor="w", font=("",40))
+        self.q_label2.grid(row=1, column=1)
+        self.ans_label = tk.Label(self, text="解答：", font=("",40))
+        self.ans_label.grid(row=2, column=0)
+        self.ans_label2 = tk.Label(self, text="", width=20, anchor="w", font=("",40))
+        self.ans_label2.grid(row=2, column=1)
+        self.result_label = tk.Label(self, text="", font=("",40))
+        self.result_label.grid(row=3, column=0, columnspan=2)
+
+        # ウィジェットの作成
+        button1 = tk.Button(self, text="button1", width=80, height=10)
+        button2 = tk.Button(self, text="button2",width=80, height=10)
+        button3 = tk.Button(self, text="button3",width=80, height=10)
+        button4 = tk.Button(self, text="button4", width=80, height=10)
+        # ウィジェットの設置
+        button1.grid(column=0, row=10,padx=30, pady=20)
+        button2.grid(column=1, row=10)
+        button3.grid(column=0, row=20,padx=30)
+        button4.grid(column=1, row=20)
 
         # # 時間計測用のラベル
         self.time_label = tk.Label(self, text="", font=("",20))
-        self.time_label.grid(row=3, column=0, columnspan=2)
+        self.time_label.grid(row=4, column=0, columnspan=2)
+        self.result_label = tk.Label(self, text="", font=("",40))
+        self.result_label.grid(row=5, column=0, columnspan=2)
 
         self.flg2 = True
 
@@ -120,16 +145,7 @@ class Application(tk.Frame):
 
             # 次の問題を出題
             self.index += 1
-            # 2分経ったら
-            if self.second == 10:
-                self.flg = False
-                self.q_label2.configure(text="")
-                messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
 
-                # logに書き込み
-                self.log("-", "-","relax", "-", False)
-                #sys.exit(0)
-                self.movie(root)
 
 
             self.ans, q = QUESTION()
@@ -151,6 +167,19 @@ class Application(tk.Frame):
             self.second += 1
             self.time_label.configure(text=f"経過時間：{self.second}秒")
             time.sleep(1)
+
+            # 2分経ったら
+            if self.second == 30:
+                self.q_label2.configure(text="")
+                messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
+
+                # logに書き込み
+                self.log("-", "-","relax", "-", False)
+                #sys.exit(0)
+                self.destroy()
+                movie(root)
+                self.second = 0
+                pass
 
     def log(self, situation, correct, action, judge, flag):
         # logに書き込み
