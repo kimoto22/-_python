@@ -6,7 +6,15 @@ import threading
 import random
 import datetime
 import pandas as pd
+import video
+import audio
+from tkinter import messagebox
 
+video = video.Video()
+audio = audio.Audio()
+def click_close():
+    if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
+        root.destroy()
 
 def QUESTION():
     one = random.randint(10, 20)
@@ -32,7 +40,8 @@ class Application(tk.Frame):
         super().__init__(master)
         self.pack()
 
-        master.geometry("300x200")
+        #master.geometry("1280x720")
+        master.state("zoomed")
         master.title("タイピングゲーム！")
 
         # 問題数インデックス
@@ -43,10 +52,10 @@ class Application(tk.Frame):
 
         self.create_widgets()
 
-        self.columes = ["time", "action", "situation", "judge"]
+        self.columes = ["time", "action", "correct","situation", "judge"]
         dt_now = datetime.datetime.now()
         time = dt_now.strftime('%Y-%m-%d-%H%M%S')
-        data = [[time, "start", "-", "-"]]
+        data = [[time, "start", "-","-", "-"]]
         # self.df = pd.DataFrame(data, index=self.columes)
         self.df = pd.DataFrame(data, columns=self.columes)
         print(self.df)
@@ -58,9 +67,14 @@ class Application(tk.Frame):
         # Tkインスタンスに対してキーイベント処理を実装
         self.master.bind("<KeyPress>", self.type_event)
 
+    def movie(self,master):
+        master.frame = tk.Label(master)
+        master.frame.pack()
+        video.openfile("./relax.mp4",master.frame)
+        audio.openfile("./relax.wav")
 
-
-
+        audio.play()
+        video.play()
 
 
     # ウィジェットの生成と配置
@@ -70,7 +84,6 @@ class Application(tk.Frame):
 
         # 問題作成
         self.ans, q = QUESTION()
-
         self.q_label2 = tk.Label(self, text=q, width=10, anchor="w", font=("",20))
         self.q_label2.grid(row=0, column=1)
         self.ans_label = tk.Label(self, text="解答：", font=("",20))
@@ -93,13 +106,12 @@ class Application(tk.Frame):
         if event.keysym == "Return":
             if str(self.ans) == self.ans_label2["text"]:
                 # logに書き込み
-                self.log(self.ans_label2["text"], "concentrate", "○", False)
-
+                self.log(self.ans_label2["text"], self.ans,"concentrate", "correct", False)
                 self.result_label.configure(text="正解！", fg="red")
                 self.correct_cnt += 1
             else:
                 # logに書き込み
-                self.log(self.ans_label2["text"], "concentrate", "×", False)
+                self.log(self.ans_label2["text"], self.ans,"concentrate", "incorrect", False)
 
                 self.result_label.configure(text="残念！", fg="blue")
 
@@ -115,8 +127,10 @@ class Application(tk.Frame):
                 messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
 
                 # logに書き込み
-                self.log("end", "-", "-", True)
-                sys.exit(0)
+                self.log("end", "-","-", "-", True)
+                #sys.exit(0)
+                self.movie(root)
+
 
             self.ans, q = QUESTION()
             self.q_label2.configure(text=q)
@@ -137,12 +151,12 @@ class Application(tk.Frame):
             self.time_label.configure(text=f"経過時間：{self.second}秒")
             time.sleep(1)
 
-    def log(self, situation, action, judge, flag):
+    def log(self, situation, correct, action, judge, flag):
         # logに書き込み
         dt_now = datetime.datetime.now()
         time = dt_now.strftime('%Y-%m-%d-%H-%M-%S')
 
-        data = [[time, situation, action, judge]]
+        data = [[time, situation, correct,action, judge]]
         self.df1 = pd.DataFrame(data, columns=self.columes)
         self.df = pd.concat([self.df, self.df1], axis=0)
         print(self.df)
@@ -157,6 +171,7 @@ class Application(tk.Frame):
 if __name__ == "__main__":
     root = tk.Tk()
     Application(master=root)
+    root.protocol("WM_DELETE_WINDOW", click_close)
     root.mainloop()
 
 
