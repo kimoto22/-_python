@@ -54,7 +54,7 @@ class Application(tk.Frame):
 
         self.columes = ["time", "action", "correct","situation", "judge"]
         dt_now = datetime.datetime.now()
-        time = dt_now.strftime('%Y-%m-%d-%H%M%S')
+        time = dt_now.strftime('%Y-%m-%d %H:%M:%S.%f')
         data = [[time, "start", "-","-", "-"]]
         # self.df = pd.DataFrame(data, index=self.columes)
         self.df = pd.DataFrame(data, columns=self.columes)
@@ -121,7 +121,7 @@ class Application(tk.Frame):
             # 次の問題を出題
             self.index += 1
             # 2分経ったら
-            if self.index == 5:
+            if self.second == 10:
                 self.flg = False
                 self.q_label2.configure(text="終了！")
                 messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
@@ -134,6 +134,7 @@ class Application(tk.Frame):
 
             self.ans, q = QUESTION()
             self.q_label2.configure(text=q)
+            self.log("problem_switching","-", "concentrate", "-", False)
 
         elif event.keysym == "BackSpace":
             text = self.ans_label2["text"]
@@ -154,7 +155,7 @@ class Application(tk.Frame):
     def log(self, situation, correct, action, judge, flag):
         # logに書き込み
         dt_now = datetime.datetime.now()
-        time = dt_now.strftime('%Y-%m-%d-%H-%M-%S')
+        time = dt_now.strftime('%Y-%m-%d %H:%M:%S.%f')
 
         data = [[time, situation, correct,action, judge]]
         self.df1 = pd.DataFrame(data, columns=self.columes)
@@ -164,7 +165,7 @@ class Application(tk.Frame):
         if flag:
             # log書き出し
             dt_now = datetime.datetime.now()
-            self.df.to_csv(".\\log_dir\\{}.csv".format(dt_now.strftime('%Y-%m-%d-%H-%M-%S')), index=False)
+            self.df.to_csv(".\\log_dir\\{}.csv".format(dt_now.strftime('%Y-%m-%d-%H-%M')), index=False)
 
 
 
