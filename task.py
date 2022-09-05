@@ -18,18 +18,24 @@ def QUESTION():
     two = random.randint(1, 9)
     hugo_index = random.randint(0,2)
 
+    random_radiobutton = random.randint(0,3)
+
     hugo = ["×", "-", "+"]
     ans = [one*two, one-two, one+two]
 
+
+    # 問題をランダムに生成
     hugo = hugo[hugo_index]
     ans = ans[hugo_index]
+    radio_button_list = [ans,ans*10,ans-10,ans*5]
+    random.shuffle(radio_button_list) # 配列の中をシャッフル
 
     question = "{} {} {} = ".format(one,hugo,two)
 
     print("hugo", hugo)
     print("ans", ans)
 
-    return ans, question
+    return ans, question, radio_button_list
 
 def movie():
     # sleep 前のエポック秒(UNIX時間)を取得
@@ -75,7 +81,7 @@ class Application(tk.Frame):
         self.t.start()
 
         # Tkインスタンスに対してキーイベント処理を実装
-        self.master.bind("<KeyPress>", self.type_event)
+        # self.master.bind("<KeyPress>", self.type_event)
 
     def click_close(self):
         if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
@@ -92,26 +98,64 @@ class Application(tk.Frame):
         self.q_label.grid(row=1, column=0)
 
         # 問題作成
-        self.ans, q = QUESTION()
+        self.ans, q, radio_button_list = QUESTION()
         self.q_label2 = tk.Label(self, text=q, width=20, anchor="w", font=("",40))
         self.q_label2.grid(row=1, column=1)
         self.ans_label = tk.Label(self, text="解答：", font=("",40))
         self.ans_label.grid(row=2, column=0)
-        self.ans_label2 = tk.Label(self, text="", width=20, anchor="w", font=("",40))
-        self.ans_label2.grid(row=2, column=1)
+
         self.result_label = tk.Label(self, text="", font=("",40))
         self.result_label.grid(row=3, column=0, columnspan=2)
 
         # ウィジェットの作成
-        button1 = tk.Button(self, text="button1", width=80, height=10)
-        button2 = tk.Button(self, text="button2",width=80, height=10)
-        button3 = tk.Button(self, text="button3",width=80, height=10)
-        button4 = tk.Button(self, text="button4", width=80, height=10)
+        self.radio_value = tk.IntVar()             # ラジオボタンの初期値を0にする
+
+        # ラジオボタンの作成
+        self.radio0 = tk.Radiobutton(self.master,
+                                text = str(radio_button_list[0]),      # ラジオボタンの表示名
+                                command = self.radio_click,  # クリックされたときに呼ばれるメソッド
+                                variable = self.radio_value, # 選択の状態を設定する
+                                value = str(radio_button_list[0])                    # ラジオボタンに割り付ける値の設定
+                                )
+
+        self.radio1 = tk.Radiobutton(self.master,
+                                text = str(radio_button_list[1]),      # ラジオボタンの表示名
+                                command = self.radio_click,  # クリックされたときに呼ばれるメソッド
+                                variable = self.radio_value, # 選択の状態を設定する
+                                value = str(radio_button_list[1])                    # ラジオボタンに割り付ける値の設定
+                                )
+
+        self.radio2 = tk.Radiobutton(self.master,
+                                text = str(radio_button_list[2]),      # ラジオボタンの表示名
+                                command = self.radio_click,  # クリックされたときに呼ばれるメソッド
+                                variable = self.radio_value, # 選択の状態を設定する
+                                value = str(radio_button_list[2])                    # ラジオボタンに割り付ける値の設定
+                                )
+
+        self.radio3 = tk.Radiobutton(self.master,
+                                     text = str(radio_button_list[3]),      # ラジオボタンの表示名
+                                     command = self.radio_click,  # クリックされたときに呼ばれるメソッド
+                                     variable = self.radio_value, # 選択の状態を設定する
+                                     value = str(radio_button_list[3])                    # ラジオボタンに割り付ける値の設定
+                                     )
+
+        # ボタンの作成
+        self.button = tk.Button(self.master,
+                           text = "OK",  # ボタンの表示名
+                           command = self.button_click  # クリックされたときに呼ばれるメソッド
+                           )
+
+        # ボタンクリックに対してキーイベント処理を実装
+        # self.button.bind("<ButtonPress>", self.type_event)
+
+
+
         # ウィジェットの設置
-        button1.grid(column=0, row=10,padx=50, pady=20)
-        button2.grid(column=1, row=10)
-        button3.grid(column=0, row=20,padx=50)
-        button4.grid(column=1, row=20)
+        self.radio0.pack()
+        self.radio1.pack()
+        self.radio2.pack()
+        self.radio3.pack()
+        self.button.pack()
 
         # # 時間計測用のラベル
         self.time_label = tk.Label(self, text="", font=("",20))
@@ -121,50 +165,64 @@ class Application(tk.Frame):
 
         self.flg2 = True
 
+    def radio_click(self):
+        # ラジオボタンの値を取得
+        value = self.radio_value.get()
+        print(f"ラジオボタンの値は {value} です")
+
+        # "OK"のボタンを押したかどうか
+        self.next = False
+    # def button_click(self):
+    #     # 問題を次に移動させるフラグを立てる
+    #     value = self.radio_value.get()
+    #     self.ans_label2 = value
+    #     self.next = True
+
 
     # キー入力時のイベント処理
-    def type_event(self, event):
-        # 入力値がEnterの場合は答え合わせ
-        if event.keysym == "Return":
-            if str(self.ans) == self.ans_label2["text"]:
-                # logに書き込み
-                self.log(self.ans_label2["text"], self.ans,"concentrate", "correct", False)
-                self.result_label.configure(text="正解！", fg="red")
-                self.correct_cnt += 1
-            else:
-                # logに書き込み
-                self.log(self.ans_label2["text"], self.ans,"concentrate", "miss", False)
+    def button_click(self):
+        value = self.radio_value.get()
+        self.ans_label2 = value
+        # 入力値の答え合わせ
+        print("OKボタンを押しました")
+        print(f"押した答え:{self.ans_label2},本当の答え：{self.ans}")
+        if str(self.ans) == str(self.ans_label2):
+            # logに書き込み
+            self.log(self.ans_label2, self.ans,"concentrate", "correct", False)
+            self.result_label.configure(text="正解！", fg="red")
+            self.correct_cnt += 1
+        else:
+            # logに書き込み
+            self.log(self.ans_label2, self.ans,"concentrate", "miss", False)
 
-                self.result_label.configure(text="残念！", fg="blue")
+            self.result_label.configure(text="残念！", fg="blue")
 
-            # 解答欄をクリア
-            self.ans_label2.configure(text="")
+        # 解答欄をクリア
+        self.ans_label2 = ""
 
-            # 次の問題を出題
-            self.index += 1
-            self.ans, q = QUESTION()
-            self.q_label2.configure(text=q)
-            self.log("problem_switching","-", "concentrate", "-", False)
+        # 次の問題を出題
+        self.index += 1
+        self.ans, q, radio_button_list = QUESTION()
+        self.q_label2.configure(text=q)
+        self.radio0.configure(text=str(radio_button_list[0]), value=str(radio_button_list[0]))
+        self.radio1.configure(text=str(radio_button_list[1]), value=str(radio_button_list[1]))
+        self.radio2.configure(text=str(radio_button_list[2]), value=str(radio_button_list[2]))
+        self.radio3.configure(text=str(radio_button_list[3]), value=str(radio_button_list[3]))
+        self.log("problem_switching","-", "concentrate", "-", False)
+        # "OK"のボタンを押したかどうか
+        self.next = False
 
-        elif event.keysym == "BackSpace":
-            text = self.ans_label2["text"]
-            self.ans_label2["text"] = text[:-1]
-
-        # else:
-            # # 入力値がEnter以外の場合は数字を入力してくださいと追記する
-            # self.ans_label2["text"] += event.keysym
 
     def timer(self):
         self.second = 0
         self.flg = True
         while self.flg:
-            print(self.second)
             self.second += 1
             #self.time_label.configure(text=f"経過時間：{self.second}秒")
             time.sleep(1)
 
             # 2分経ったら
-            if self.second == 10:
+            if self.second == 120:
                 self.q_label2.configure(text="")
                 messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
 
