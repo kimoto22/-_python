@@ -12,9 +12,6 @@ from tkinter import messagebox
 
 video = video.Video()
 audio = audio.Audio()
-def click_close():
-    if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
-        root.destroy()
 
 def QUESTION():
     one = random.randint(10, 20)
@@ -34,37 +31,28 @@ def QUESTION():
 
     return ans, question
 
-def movie(root):
-    root.frame = tk.Label(root)
-    root.frame.pack()
-    label = tk.Label(root, text="2分間休憩時間です", font=("",40))
-    label.pack(anchor='center',expand=1)
-    video.openfile("./relax.mp4",root.frame)
-    audio.openfile("./relax.wav")
-
+def movie():
     # sleep 前のエポック秒(UNIX時間)を取得
     startSec = time.time()
-    # 1.5 秒 止める
     time.sleep(5)
     # sleep していた秒数を計算して表示
     print(time.time() - startSec)
+
+    canvas = tk.Canvas()
+    canvas.place(x=-2, y=-2) # キャンバス
+    canvas.frame = tk.Label(canvas)
+    canvas.frame.pack()
+    video.openfile("./relax.mp4",canvas.frame)
+    audio.openfile("./relax.wav")
     audio.play()
     video.play()
-    #print("AA")
 
-def quit_me(root_window):
-    #root_window.quit()
-    root_window.destroy()
+
 
 class Application(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
         self.pack()
-
-        #master.geometry("1280x720")
-        #master.state("zoomed")
-        root.attributes('-fullscreen', True)
-        master.title("タイピングゲーム！")
 
         # 問題数インデックス
         self.index = 0
@@ -83,15 +71,21 @@ class Application(tk.Frame):
         #print(self.df)
 
         # 経過時間スレッドの開始
-        self.t = threading.Thread(target=self.timer)
+        self.t = threading.Thread(target=self.timer,daemon=True)
         self.t.start()
 
         # Tkインスタンスに対してキーイベント処理を実装
         self.master.bind("<KeyPress>", self.type_event)
 
+    def click_close(self):
+        if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
+            root.destroy()
+            #self.t.setDaemon(True)
+            return 0
+
     # ウィジェットの生成と配置
     def create_widgets(self):
-
+        #print("A")
         self.ans_label2 = tk.Label(self, text="", width=10, anchor="w", font=("",40))
         self.ans_label2.grid(row=0, column=0)
         self.q_label = tk.Label(self, text="お題：", font=("",40))
@@ -114,9 +108,9 @@ class Application(tk.Frame):
         button3 = tk.Button(self, text="button3",width=80, height=10)
         button4 = tk.Button(self, text="button4", width=80, height=10)
         # ウィジェットの設置
-        button1.grid(column=0, row=10,padx=30, pady=20)
+        button1.grid(column=0, row=10,padx=50, pady=20)
         button2.grid(column=1, row=10)
-        button3.grid(column=0, row=20,padx=30)
+        button3.grid(column=0, row=20,padx=50)
         button4.grid(column=1, row=20)
 
         # # 時間計測用のラベル
@@ -156,17 +150,17 @@ class Application(tk.Frame):
             text = self.ans_label2["text"]
             self.ans_label2["text"] = text[:-1]
 
-        else:
-            # 入力値がEnter以外の場合は数字を入力してくださいと追記する
-            self.ans_label2["text"] += event.keysym
+        # else:
+            # # 入力値がEnter以外の場合は数字を入力してくださいと追記する
+            # self.ans_label2["text"] += event.keysym
 
     def timer(self):
         self.second = 0
         self.flg = True
         while self.flg:
-            print("thread")
+            print(self.second)
             self.second += 1
-            self.time_label.configure(text=f"経過時間：{self.second}秒")
+            #self.time_label.configure(text=f"経過時間：{self.second}秒")
             time.sleep(1)
 
             # 2分経ったら
@@ -181,11 +175,14 @@ class Application(tk.Frame):
                 #quit_me(root)
                 #sys.exit(0)
                 self.second = 0
-                self.destroy()
-                movie(root)
+                #self.t.join()
 
-                #sys.exit()
-                pass
+
+                self.destroy()
+
+                movie()
+                return 0
+
 
     def log(self, situation, correct, action, judge, flag):
         # logに書き込み
@@ -207,10 +204,19 @@ class Application(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    Application(master=root)
-    root.protocol("WM_DELETE_WINDOW", click_close)
+    label = tk.Label(root, text="2分間休憩時間です", font=("",40))
+    label.pack(anchor='center',expand=1)
+    #master.geometry("1280x720")
+    #root.state("zoomed")
+    root.attributes('-fullscreen', True)
+    root.title("タイピングゲーム！")
+
+    canvas1 = tk.Canvas()
+
+    canvas1.place(x=0, y=0) # キャンバス
+    App = Application(master=canvas1)
+    print(App)
+
+    root.protocol("WM_DELETE_WINDOW", App.click_close)
     root.mainloop()
-    #print("END")
-
-
 # https://max999blog.com/pandas-add-row-to-dataframe/
