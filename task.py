@@ -37,11 +37,24 @@ def QUESTION():
 def movie(root):
     root.frame = tk.Label(root)
     root.frame.pack()
+    label = tk.Label(root, text="2分間休憩時間です", font=("",40))
+    label.pack(anchor='center',expand=1)
     video.openfile("./relax.mp4",root.frame)
     audio.openfile("./relax.wav")
 
+    # sleep 前のエポック秒(UNIX時間)を取得
+    startSec = time.time()
+    # 1.5 秒 止める
+    time.sleep(5)
+    # sleep していた秒数を計算して表示
+    print(time.time() - startSec)
     audio.play()
     video.play()
+    #print("AA")
+
+def quit_me(root_window):
+    #root_window.quit()
+    root_window.destroy()
 
 class Application(tk.Frame):
     def __init__(self, master):
@@ -67,24 +80,14 @@ class Application(tk.Frame):
         data = [[time, "start", "-","-", "-"]]
         # self.df = pd.DataFrame(data, index=self.columes)
         self.df = pd.DataFrame(data, columns=self.columes)
-        print(self.df)
+        #print(self.df)
 
         # 経過時間スレッドの開始
-        t = threading.Thread(target=self.timer)
-        t.start()
+        self.t = threading.Thread(target=self.timer)
+        self.t.start()
 
         # Tkインスタンスに対してキーイベント処理を実装
         self.master.bind("<KeyPress>", self.type_event)
-
-    def movie(self,master):
-        master.frame = tk.Label(master)
-        master.frame.pack()
-        video.openfile("./relax.mp4",master.frame)
-        audio.openfile("./relax.wav")
-
-        audio.play()
-        video.play()
-
 
     # ウィジェットの生成と配置
     def create_widgets(self):
@@ -145,9 +148,6 @@ class Application(tk.Frame):
 
             # 次の問題を出題
             self.index += 1
-
-
-
             self.ans, q = QUESTION()
             self.q_label2.configure(text=q)
             self.log("problem_switching","-", "concentrate", "-", False)
@@ -164,21 +164,27 @@ class Application(tk.Frame):
         self.second = 0
         self.flg = True
         while self.flg:
+            print("thread")
             self.second += 1
             self.time_label.configure(text=f"経過時間：{self.second}秒")
             time.sleep(1)
 
             # 2分経ったら
-            if self.second == 30:
+            if self.second == 10:
                 self.q_label2.configure(text="")
                 messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
 
                 # logに書き込み
                 self.log("-", "-","relax", "-", False)
+                #root.destroy()
+
+                #quit_me(root)
                 #sys.exit(0)
+                self.second = 0
                 self.destroy()
                 movie(root)
-                self.second = 0
+
+                #sys.exit()
                 pass
 
     def log(self, situation, correct, action, judge, flag):
@@ -189,13 +195,14 @@ class Application(tk.Frame):
         data = [[time, situation, correct,action, judge]]
         self.df1 = pd.DataFrame(data, columns=self.columes)
         self.df = pd.concat([self.df, self.df1], axis=0)
-        print(self.df)
+        #print(self.df)
+        print(flag)
 
-        if flag:
+        if flag==False:
             # log書き出し
             dt_now = datetime.datetime.now()
             self.df.to_csv(".\\log_dir\\{}.csv".format(dt_now.strftime('%Y-%m-%d-%H-%M')), index=False)
-
+            print("READ")
 
 
 if __name__ == "__main__":
@@ -203,6 +210,7 @@ if __name__ == "__main__":
     Application(master=root)
     root.protocol("WM_DELETE_WINDOW", click_close)
     root.mainloop()
+    #print("END")
 
 
 # https://max999blog.com/pandas-add-row-to-dataframe/
