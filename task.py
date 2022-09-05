@@ -211,7 +211,7 @@ if __name__ == "__main__":
     root.attributes('-fullscreen', True)
     root.title("タイピングゲーム！")
 
-    canvas1 = tk.Canvas()
+    canvas1 = tk.Canvas(width = 1280,height = 720,bg = "cyan")
 
     canvas1.place(x=0, y=0) # キャンバス
     App = Application(master=canvas1)
