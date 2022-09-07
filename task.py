@@ -34,32 +34,41 @@ def QUESTION():
 
     return ans, question, radio_button_list
 
+####切り替えボタン####
+def change(sence):
+    canvas = tk.Canvas(root, highlightthickness=0)
+    canvas.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
+
+    # 各種ウィジェットの作成
+    label1_frame_app = tk.Label(canvas, text="準備ができたら課題に進んでください", font=("",40))
+    button_change_frame_app = tk.Button(canvas, text="進む", font=("",40),command=sence(canvas))
+
+    # 各種ウィジェットの設置
+    label1_frame_app.pack(anchor='center',expand=1)
+    button_change_frame_app.pack(anchor='center',expand=1)
+    canvas.destroy()
+
 ####relax動画####
 def timecount(canvas,video,audio):
     second = 0
     flg = True
-    time_label = tk.Label(canvas, text="", font=("",20))
-    time_label.pack(anchor='nw',expand=0)
+    #time_label = tk.Label(canvas, text="", font=("",20))
+    #time_label.pack(anchor='nw',expand=0)
     while flg:
         second += 1
-        #time_label.configure(text=f"経過時間：{self.second}秒")
         time.sleep(1)   # convert second to hour, minute and seconds
         elapsed_minute = (second % 3600) // 60
         elapsed_second = (second % 3600 % 60)
 
         # print as 00:00:00
         print(str(elapsed_minute).zfill(2) + ":" + str(elapsed_second).zfill(2))
-        #label = tk.Label(canvas, text=str(elapsed_hour).zfill(2) + ":" + str(elapsed_minute).zfill(2) + ":" + str(elapsed_second).zfill(2), font=("",40))
-        #label.pack(anchor='nw',expand=1)
-
-        time_label.configure(text=f"経過時間：{str(elapsed_minute).zfill(2)}:{str(elapsed_second).zfill(2)}")
-        #canvas.lift(time_label,frame)
+        #time_label.configure(text=f"経過時間：{str(elapsed_minute).zfill(2)}:{str(elapsed_second).zfill(2)}")
 
         if second==3:
             #video.stop()
             audio.stop()
             canvas.destroy()
-            #sys.exit(0)
+            change()
 
             return 0
 
@@ -71,7 +80,7 @@ def movie():
 
     # sleep 前のエポック秒(UNIX時間)を取得
     startSec = time.time()
-    time.sleep(5)
+    time.sleep(1)
     # sleep していた秒数を計算して表示
     print(time.time() - startSec)
     canvas.frame = tk.Label(canvas)
@@ -86,7 +95,13 @@ def movie():
     video.play()
     label.pack_forget()
 
+def math(canvas):
+    canvas.destroy()
+    canvas1 = tk.Canvas(root, highlightthickness=0)
+    canvas1.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
 
+    App = Application(master=canvas1)
+    print(App)
 
 class Application(tk.Frame):
     def __init__(self, master):
@@ -293,13 +308,10 @@ if __name__ == "__main__":
     #root.state("zoomed")
     root.attributes('-fullscreen', True)
     root.title("タイピングゲーム！")
+    #math()
 
-    canvas1 = tk.Canvas(root, highlightthickness=0)
-    canvas1.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
+    change(math)
 
-    App = Application(master=canvas1)
-    print(App)
-
-    root.protocol("WM_DELETE_WINDOW", App.click_close)
+    #root.protocol("WM_DELETE_WINDOW", App.click_close)
     root.mainloop()
 # https://max999blog.com/pandas-add-row-to-dataframe/
