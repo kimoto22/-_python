@@ -24,6 +24,7 @@ class Video():
             self.video = imageio.get_reader(file_path)
     def play(self):
         self.video_thread = threading.Thread(target=self._stream)
+        self.video_thread.setDaemon(True)
         self.video_thread.start()
     def stop(self):
         self.video_thread.stop()
