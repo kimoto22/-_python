@@ -16,9 +16,7 @@ def QUESTION():
     one = random.randint(10, 20)
     two = random.randint(1, 9)
     hugo_index = random.randint(0,2)
-
     random_radiobutton = random.randint(0,3)
-
     hugo = ["×", "-", "+"]
     ans = [one*two, one-two, one+two]
     # 問題をランダムに生成
@@ -26,7 +24,6 @@ def QUESTION():
     ans = ans[hugo_index]
     radio_button_list = [ans,ans*10,ans-10,ans*5]
     random.shuffle(radio_button_list) # 配列の中をシャッフル
-
     question = "{} {} {} = ".format(one,hugo,two)
 
     print("hugo", hugo)
@@ -36,17 +33,15 @@ def QUESTION():
 
 ####切り替えボタン####
 def change(sence):
-    canvas = tk.Canvas(root, highlightthickness=0)
-    canvas.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
-
+    global canvas2
+    canvas2 = tk.Canvas(root, highlightthickness=0)
+    canvas2.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
     # 各種ウィジェットの作成
-    label1_frame_app = tk.Label(canvas, text="準備ができたら課題に進んでください", font=("",40))
-    button_change_frame_app = tk.Button(canvas, text="進む", font=("",40),command=sence(canvas))
-
+    label1_frame_app = tk.Label(canvas2, text="準備ができたら課題に進んでください", font=("",40))
+    button_change_frame_app = tk.Button(canvas2, text="進む", font=("",40),command=sence)
     # 各種ウィジェットの設置
     label1_frame_app.pack(anchor='center',expand=1)
     button_change_frame_app.pack(anchor='center',expand=1)
-    canvas.destroy()
 
 ####relax動画####
 def timecount(canvas,video,audio):
@@ -59,12 +54,11 @@ def timecount(canvas,video,audio):
         time.sleep(1)   # convert second to hour, minute and seconds
         elapsed_minute = (second % 3600) // 60
         elapsed_second = (second % 3600 % 60)
-
         # print as 00:00:00
         print(str(elapsed_minute).zfill(2) + ":" + str(elapsed_second).zfill(2))
         #time_label.configure(text=f"経過時間：{str(elapsed_minute).zfill(2)}:{str(elapsed_second).zfill(2)}")
 
-        if second==3:
+        if second==10:
             #video.stop()
             audio.stop()
             canvas.destroy()
@@ -77,7 +71,6 @@ def movie():
     canvas.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
     label = tk.Label(canvas, text="2分間休憩時間です", font=("",40))
     label.pack(anchor='center',expand=1)
-
     # sleep 前のエポック秒(UNIX時間)を取得
     startSec = time.time()
     time.sleep(1)
@@ -90,13 +83,16 @@ def movie():
     # 経過時間スレッドの開始
     thread = threading.Thread(name="thread", target=timecount, args=[canvas,video,audio], daemon=True)
     thread.start()
-
+    #label.pack_forget()
     audio.play()
     video.play()
     label.pack_forget()
+    time.sleep(3)
+    change(math)    #シーン変更先
 
-def math(canvas):
-    canvas.destroy()
+####計算課題####
+def math():
+    canvas2.destroy()
     canvas1 = tk.Canvas(root, highlightthickness=0)
     canvas1.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
 
@@ -122,7 +118,6 @@ class Application(tk.Frame):
         data = [[time, "start", "-","-", "-"]]
         # self.df = pd.DataFrame(data, index=self.columes)
         self.df = pd.DataFrame(data, columns=self.columes)
-
 
         # 経過時間スレッドの開始
         self.t = threading.Thread(target=self.timer,daemon=True)
@@ -277,7 +272,6 @@ class Application(tk.Frame):
                 #quit_me(root)
                 #sys.exit(0)
                 self.second = 0
-                #self.t.join()
                 self.destroy()
                 self.master.destroy()
 
@@ -308,9 +302,8 @@ if __name__ == "__main__":
     #root.state("zoomed")
     root.attributes('-fullscreen', True)
     root.title("タイピングゲーム！")
-    #math()
 
-    change(math)
+    change(math)    #シーン変更先
 
     #root.protocol("WM_DELETE_WINDOW", App.click_close)
     root.mainloop()
