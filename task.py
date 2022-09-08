@@ -58,11 +58,11 @@ def timecount(canvas,video,audio):
         print(str(elapsed_minute).zfill(2) + ":" + str(elapsed_second).zfill(2))
         #time_label.configure(text=f"経過時間：{str(elapsed_minute).zfill(2)}:{str(elapsed_second).zfill(2)}")
 
-        if second==10:
+        if second==3:
             #video.stop()
             audio.stop()
             canvas.destroy()
-            change()
+            change(math)
 
             return 0
 
@@ -88,10 +88,10 @@ def movie():
     video.play()
     label.pack_forget()
     time.sleep(3)
-    change(math)    #シーン変更先
 
 ####視線課題####
-
+"""def eye_task:
+    canvas2.destroy()"""
 
 ####計算課題####
 def math():
