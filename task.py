@@ -83,7 +83,7 @@ def movie():
     # 経過時間スレッドの開始
     thread = threading.Thread(name="thread", target=timecount, args=[canvas,video,audio], daemon=True)
     thread.start()
-    #label.pack_forget()
+
     audio.play()
     video.play()
     label.pack_forget()
