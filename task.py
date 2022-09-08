@@ -66,6 +66,7 @@ def timecount(canvas,video,audio):
 
             return 0
 
+
 def movie():
     canvas = tk.Canvas(root, highlightthickness=0)
     canvas.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window

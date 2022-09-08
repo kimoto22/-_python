@@ -2,6 +2,7 @@
 import tkinter as tk
 import random
 root = tk.Tk()
+
 #root.geometry("1280x720")
 #root.state("zoomed")
 root.attributes('-fullscreen', True)
