@@ -90,6 +90,9 @@ def movie():
     time.sleep(3)
     change(math)    #シーン変更先
 
+####視線課題####
+
+
 ####計算課題####
 def math():
     canvas2.destroy()
