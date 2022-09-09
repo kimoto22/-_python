@@ -9,12 +9,14 @@ import random
 from tkinter import messagebox
 import pyautogui as pag
 
+
 scr_w,scr_h= pag.size()
 print('画面サイズの幅：',scr_w)
 print('画面サイズの高さ：',scr_h)
 
 video = video.Video()
 audio = audio.Audio()
+
 
 def QUESTION():
     one = random.randint(10, 20)
@@ -40,14 +42,13 @@ def QUESTION():
 
 
 ####切り替えボタン####
-def change(sence):
-    print(sence)
+def change():
     global canvas2
     canvas2 = tk.Canvas(root, highlightthickness=0)
     canvas2.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
     # 各種ウィジェットの作成
     label1_frame_app = tk.Label(canvas2, text="準備ができたら課題に進んでください", font=("",40))
-    button_change_frame_app = tk.Button(canvas2, text="進む", font=("",40),command= lambda: task_select(sence))
+    button_change_frame_app = tk.Button(canvas2, text="進む", font=("",40),command= lambda: task_select())
     # 各種ウィジェットの設置
     label1_frame_app.pack(anchor='center',expand=1)
     button_change_frame_app.pack(anchor='center',expand=1)
@@ -68,11 +69,11 @@ def timecount(canvas,video,audio):
         print(str(elapsed_minute).zfill(2) + ":" + str(elapsed_second).zfill(2))
         #time_label.configure(text=f"経過時間：{str(elapsed_minute).zfill(2)}:{str(elapsed_second).zfill(2)}")
 
-        if second==3:
+        if second==10:
             video.stop()
             audio.stop()
             canvas.destroy()
-            change(eye_task)
+            change()
             flg = False
 
             return 0
@@ -101,12 +102,15 @@ def movie():
     time.sleep(3)
 
 ####課題選択####
-def task_select(task):
+def task_select():
     canvas2.destroy()
     canvas1 = tk.Canvas(root, highlightthickness=0 )#,bg = "cyan")
     canvas1.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
-
-    App = task(master=canvas1)
+    print("count:"+str(count))
+    if count % 2==0:
+        eye_task(master=canvas1)
+    else:
+        Application(master=canvas1)
     #print(App)
 
 ####視線課題####
@@ -118,6 +122,7 @@ class eye_task(tk.Frame):
         self.column_data = (0, 0, 1, 1)
         self.row_data = (0, 1, 0, 1)
         self.text = self.random_symbol()
+        self.flg = True
 
         self.symbol=[]
         self.button=[]
@@ -170,23 +175,28 @@ class eye_task(tk.Frame):
     def timer(self):
         self.second = 0
         self.flg = True
-        print(self.second)
+        #print(self.second)
         while self.flg:
             print(self.second)
             self.second += 1
             time.sleep(1)
 
             # 2分経ったら
-            if self.second == 5:
+            if self.second == 10:
                 self.second = 0
                 self.destroy()
                 self.master.destroy()
-                change(eye_task)
+                global count
+                count+=1
                 self.flg = False
+                print("----------------------")
+                movie()
+
+                return 0
 
     def change_label_text(self):
         self.text=self.random_symbol()
-        print("A")
+        print(self.flg)
         if self.flg == True:
             self.master.delete("line")
             for i in range(4):
@@ -360,7 +370,7 @@ class Application(tk.Frame):
             time.sleep(1)
 
             # 2分経ったら
-            if self.second == 1:
+            if self.second == 10:
 
                 self.q_label2.configure(text="")
                 messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
@@ -375,6 +385,8 @@ class Application(tk.Frame):
                 self.destroy()
                 self.master.destroy()
 
+                global count
+                count+=1
                 movie()
                 return 0
 
@@ -400,11 +412,12 @@ if __name__ == "__main__":
     root = tk.Tk()
     #root.geometry("1280x720")
     #root.state("zoomed")
-
+    global count
+    count = 1
     root.attributes('-fullscreen', True)
     root.title("タイピングゲーム！")
 
-    change(Application)    #シーン変更先
+    change()    #シーン変更先
     #change(eye_task)
     #root.protocol("WM_DELETE_WINDOW", App.click_close)
     root.mainloop()
