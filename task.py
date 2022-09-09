@@ -9,8 +9,9 @@ import random
 from tkinter import messagebox
 import pyautogui as pag
 
-
-scr_w,scr_h= pag.size()
+global interval
+interval = 120
+scr_w, scr_h = pag.size()
 print('画面サイズの幅：',scr_w)
 print('画面サイズの高さ：',scr_h)
 
@@ -69,7 +70,8 @@ def timecount(canvas,video,audio):
         print(str(elapsed_minute).zfill(2) + ":" + str(elapsed_second).zfill(2))
         #time_label.configure(text=f"経過時間：{str(elapsed_minute).zfill(2)}:{str(elapsed_second).zfill(2)}")
 
-        if second==10:
+        #print(interval)
+        if second==interval:
             video.stop()
             audio.stop()
             canvas.destroy()
@@ -182,7 +184,7 @@ class eye_task(tk.Frame):
             time.sleep(1)
 
             # 2分経ったら
-            if self.second == 10:
+            if self.second == interval:
                 self.second = 0
                 self.destroy()
                 self.master.destroy()
@@ -370,7 +372,7 @@ class Application(tk.Frame):
             time.sleep(1)
 
             # 2分経ったら
-            if self.second == 10:
+            if self.second == interval:
 
                 self.q_label2.configure(text="")
                 messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
