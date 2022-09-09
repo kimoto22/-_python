@@ -1,6 +1,5 @@
-import tkinter as tk
 import sys
-import keyboard
+import tkinter as tk
 import time
 import threading
 import random
@@ -19,11 +18,9 @@ def QUESTION():
     hugo_index = random.randint(0,2)
 
     random_radiobutton = random.randint(0,3)
-
     hugo = ["×", "-", "+"]
     ans = [one*two, one-two, one+two]
-
-
+    
     # 問題をランダムに生成
     hugo = hugo[hugo_index]
     ans = ans[hugo_index]
@@ -37,23 +34,77 @@ def QUESTION():
 
     return ans, question, radio_button_list
 
+
+####切り替えボタン####
+def change(sence):
+    global canvas2
+    canvas2 = tk.Canvas(root, highlightthickness=0)
+    canvas2.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
+    # 各種ウィジェットの作成
+    label1_frame_app = tk.Label(canvas2, text="準備ができたら課題に進んでください", font=("",40))
+    button_change_frame_app = tk.Button(canvas2, text="進む", font=("",40),command=sence)
+    # 各種ウィジェットの設置
+    label1_frame_app.pack(anchor='center',expand=1)
+    button_change_frame_app.pack(anchor='center',expand=1)
+
+####relax動画####
+def timecount(canvas,video,audio):
+    second = 0
+    flg = True
+    #time_label = tk.Label(canvas, text="", font=("",20))
+    #time_label.pack(anchor='nw',expand=0)
+    while flg:
+        second += 1
+        time.sleep(1)   # convert second to hour, minute and seconds
+        elapsed_minute = (second % 3600) // 60
+        elapsed_second = (second % 3600 % 60)
+        # print as 00:00:00
+        print(str(elapsed_minute).zfill(2) + ":" + str(elapsed_second).zfill(2))
+        #time_label.configure(text=f"経過時間：{str(elapsed_minute).zfill(2)}:{str(elapsed_second).zfill(2)}")
+
+        if second==3:
+            #video.stop()
+            audio.stop()
+            canvas.destroy()
+            change(math)
+
+            return 0
+
 def movie():
+    canvas = tk.Canvas(root, highlightthickness=0)
+    canvas.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
+    label = tk.Label(canvas, text="2分間休憩時間です", font=("",40))
+    label.pack(anchor='center',expand=1)
     # sleep 前のエポック秒(UNIX時間)を取得
     startSec = time.time()
-    time.sleep(5)
+    time.sleep(1)
     # sleep していた秒数を計算して表示
     print(time.time() - startSec)
-
-    canvas = tk.Canvas()
-    canvas.place(x=-2, y=-2) # キャンバス
     canvas.frame = tk.Label(canvas)
-    canvas.frame.pack()
+    canvas.frame.pack(side = tk.BOTTOM)
     video.openfile("./relax.mp4",canvas.frame)
     audio.openfile("./relax.wav")
+    # 経過時間スレッドの開始
+    thread = threading.Thread(name="thread", target=timecount, args=[canvas,video,audio], daemon=True)
+    thread.start()
+
     audio.play()
     video.play()
+    label.pack_forget()
+    time.sleep(3)
 
+####視線課題####
+"""def eye_task:
+    canvas2.destroy()"""
 
+####計算課題####
+def math():
+    canvas2.destroy()
+    canvas1 = tk.Canvas(root, highlightthickness=0)
+    canvas1.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
+
+    App = Application(master=canvas1)
+    print(App)
 
 class Application(tk.Frame):
     def __init__(self, master):
@@ -74,7 +125,6 @@ class Application(tk.Frame):
         data = [[time, "start", "-","-", "-"]]
         # self.df = pd.DataFrame(data, index=self.columes)
         self.df = pd.DataFrame(data, columns=self.columes)
-        #print(self.df)
 
         # 経過時間スレッドの開始
         self.t = threading.Thread(target=self.timer,daemon=True)
@@ -86,12 +136,10 @@ class Application(tk.Frame):
     def click_close(self):
         if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
             root.destroy()
-            #self.t.setDaemon(True)
             return 0
 
     # ウィジェットの生成と配置
     def create_widgets(self):
-        #print("A")
         self.ans_label2 = tk.Label(self, text="", width=10, anchor="w", font=("",40))
         self.ans_label2.grid(row=0, column=0)
         self.q_label = tk.Label(self, text="お題：", font=("",40))
@@ -147,7 +195,6 @@ class Application(tk.Frame):
 
         # ボタンクリックに対してキーイベント処理を実装
         # self.button.bind("<ButtonPress>", self.type_event)
-
 
 
         # ウィジェットの設置
@@ -218,11 +265,12 @@ class Application(tk.Frame):
         self.flg = True
         while self.flg:
             self.second += 1
-            #self.time_label.configure(text=f"経過時間：{self.second}秒")
+            self.time_label.configure(text=f"経過時間：{self.second}秒")
             time.sleep(1)
 
             # 2分経ったら
-            if self.second == 120:
+            if self.second == 1:
+
                 self.q_label2.configure(text="")
                 messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
 
@@ -233,10 +281,8 @@ class Application(tk.Frame):
                 #quit_me(root)
                 #sys.exit(0)
                 self.second = 0
-                #self.t.join()
-
-
                 self.destroy()
+                self.master.destroy()
 
                 movie()
                 return 0
@@ -250,7 +296,6 @@ class Application(tk.Frame):
         data = [[time, situation, correct,action, judge]]
         self.df1 = pd.DataFrame(data, columns=self.columes)
         self.df = pd.concat([self.df, self.df1], axis=0)
-        #print(self.df)
         print(flag)
 
         if flag==False:
@@ -262,19 +307,13 @@ class Application(tk.Frame):
 
 if __name__ == "__main__":
     root = tk.Tk()
-    label = tk.Label(root, text="2分間休憩時間です", font=("",40))
-    label.pack(anchor='center',expand=1)
-    #master.geometry("1280x720")
+    #root.geometry("1280x720")
     #root.state("zoomed")
     root.attributes('-fullscreen', True)
     root.title("タイピングゲーム！")
 
-    canvas1 = tk.Canvas(width = 1280,height = 720,bg = "cyan")
+    change(math)    #シーン変更先
 
-    canvas1.place(x=0, y=0) # キャンバス
-    App = Application(master=canvas1)
-    print(App)
-
-    root.protocol("WM_DELETE_WINDOW", App.click_close)
+    #root.protocol("WM_DELETE_WINDOW", App.click_close)
     root.mainloop()
 # https://max999blog.com/pandas-add-row-to-dataframe/
