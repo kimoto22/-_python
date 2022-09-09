@@ -165,8 +165,8 @@ class Application(tk.Frame):
         self.ans, q, radio_button_list = QUESTION()
         self.q_label2 = tk.Label(self, text=q, width=20, anchor="w", font=("", 40))
         self.q_label2.grid(row=1, column=1)
-        self.ans_label = tk.Label(self, text="解答：", font=("", 40))
-        self.ans_label.grid(row=2, column=0)
+        # self.ans_label = tk.Label(self, text="解答：", font=("", 40))
+        # self.ans_label.grid(row=2, column=0)
 
         self.result_label = tk.Label(self, text="", font=("", 40))
         self.result_label.grid(row=3, column=0, columnspan=2)
