@@ -20,20 +20,24 @@ def QUESTION():
     one = random.randint(10, 20)
     two = random.randint(1, 9)
     hugo_index = random.randint(0,2)
+
     random_radiobutton = random.randint(0,3)
     hugo = ["×", "-", "+"]
     ans = [one*two, one-two, one+two]
+    
     # 問題をランダムに生成
     hugo = hugo[hugo_index]
     ans = ans[hugo_index]
     radio_button_list = [ans,ans*10,ans-10,ans*5]
     random.shuffle(radio_button_list) # 配列の中をシャッフル
+
     question = "{} {} {} = ".format(one,hugo,two)
 
     print("hugo", hugo)
     print("ans", ans)
 
     return ans, question, radio_button_list
+
 
 ####切り替えボタン####
 def change(sence):
@@ -70,7 +74,6 @@ def timecount(canvas,video,audio):
             change(eye_task)
 
             return 0
-
 
 def movie():
     canvas = tk.Canvas(root, highlightthickness=0)
@@ -282,6 +285,7 @@ class Application(tk.Frame):
         # ボタンクリックに対してキーイベント処理を実装
         # self.button.bind("<ButtonPress>", self.type_event)
 
+
         # ウィジェットの設置
         self.radio0.pack()
         self.radio1.pack()
@@ -355,6 +359,7 @@ class Application(tk.Frame):
 
             # 2分経ったら
             if self.second == 1:
+
                 self.q_label2.configure(text="")
                 messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
 
