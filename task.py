@@ -53,6 +53,7 @@ def change(sence):
     button_change_frame_app.pack(anchor='center',expand=1)
 
 ####relax動画####
+
 def timecount(canvas,video,audio):
     second = 0
     flg = True
@@ -68,10 +69,11 @@ def timecount(canvas,video,audio):
         #time_label.configure(text=f"経過時間：{str(elapsed_minute).zfill(2)}:{str(elapsed_second).zfill(2)}")
 
         if second==3:
-            #video.stop()
+            video.stop()
             audio.stop()
             canvas.destroy()
             change(eye_task)
+            flg = False
 
             return 0
 
@@ -385,13 +387,13 @@ class Application(tk.Frame):
         data = [[time, situation, correct,action, judge]]
         self.df1 = pd.DataFrame(data, columns=self.columes)
         self.df = pd.concat([self.df, self.df1], axis=0)
-        print(flag)
+       # print(flag)
 
         if flag==False:
             # log書き出し
             dt_now = datetime.datetime.now()
             self.df.to_csv(".\\log_dir\\{}.csv".format(dt_now.strftime('%Y-%m-%d-%H-%M')), index=False)
-            print("READ")
+            #print("READ")
 
 
 if __name__ == "__main__":
