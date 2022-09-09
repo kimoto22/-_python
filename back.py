@@ -1,6 +1,11 @@
 
 import tkinter as tk
 import random
+import pyautogui as pag
+
+scr_w,scr_h= pag.size()
+print('画面サイズの幅：',scr_w)
+print('画面サイズの高さ：',scr_h)
 root = tk.Tk()
 
 #root.geometry("1280x720")
@@ -28,15 +33,35 @@ def random_symbol():#問題作成
     print(text)
     return text
 
+def change_label_text():
+    text=random_symbol()
+    print("A")
+    canvas.delete("line")
+    for i in range(4):
+        symbol[i].set(text[i][0])
+        button[i]["fg"] = text[i][1]
+        button[i].grid(column = column_data[i], row = row_data[i],padx=30,pady=30, sticky = 'nsew')
+
 def button_func(event):
 
     #event.widget.config(fg="red")
     print("形:"+event.widget.cget("text") + "　色:" +event.widget.cget("fg"))
-    text=random_symbol()
+    #canvas.pack_forget()
 
     for i in range(4):
-        symbol[i].set(text[i][0])
-        button[i]["fg"] = text[i][1]
+        button[i].grid_forget()
+
+
+    #canvas.create_line(20, 10, 280, 190, fill = "Red", width = 5, tag="line")
+    canvas.create_text(scr_w/2, scr_h/2, text="●",font=("",40) ,tag="line")
+
+    #1000ms後にchange_label_textを実行
+    root.after(
+        1000,
+        change_label_text,
+    )
+    # 線の削除(id指定)
+    #canvas.delete(id)
 
 column_data = (0, 0, 1, 1)
 row_data = (0, 1, 0, 1)

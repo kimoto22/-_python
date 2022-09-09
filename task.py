@@ -393,6 +393,7 @@ if __name__ == "__main__":
     root = tk.Tk()
     #root.geometry("1280x720")
     #root.state("zoomed")
+
     root.attributes('-fullscreen', True)
     root.title("タイピングゲーム！")
 
