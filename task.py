@@ -1,6 +1,8 @@
+import sys
 import tkinter as tk
 import time
 import threading
+import random
 import datetime
 import pandas as pd
 import video
@@ -17,7 +19,6 @@ print("画面サイズの高さ：", scr_h)
 
 video = video.Video()
 audio = audio.Audio()
-
 
 def QUESTION():
     one = random.randint(10, 20)
@@ -83,7 +84,6 @@ def timecount(canvas, video, audio):
             flg = False
 
             return 0
-
 
 def movie():
     canvas = tk.Canvas(root, highlightthickness=0)
@@ -304,6 +304,7 @@ class Application(tk.Frame):
             command=self.radio_click,  # クリックされたときに呼ばれるメソッド
             variable=self.radio_value,  # 選択の状態を設定する
             value=str(radio_button_list[0]),  # ラジオボタンに割り付ける値の設定
+            font=("", 20),
         )
 
         self.radio1 = tk.Radiobutton(
@@ -312,6 +313,7 @@ class Application(tk.Frame):
             command=self.radio_click,  # クリックされたときに呼ばれるメソッド
             variable=self.radio_value,  # 選択の状態を設定する
             value=str(radio_button_list[1]),  # ラジオボタンに割り付ける値の設定
+            font=("", 20),
         )
 
         self.radio2 = tk.Radiobutton(
@@ -320,6 +322,7 @@ class Application(tk.Frame):
             command=self.radio_click,  # クリックされたときに呼ばれるメソッド
             variable=self.radio_value,  # 選択の状態を設定する
             value=str(radio_button_list[2]),  # ラジオボタンに割り付ける値の設定
+            font=("", 20),
         )
 
         self.radio3 = tk.Radiobutton(
@@ -328,6 +331,7 @@ class Application(tk.Frame):
             command=self.radio_click,  # クリックされたときに呼ばれるメソッド
             variable=self.radio_value,  # 選択の状態を設定する
             value=str(radio_button_list[3]),  # ラジオボタンに割り付ける値の設定
+            font=("", 20),
         )
 
         # ボタンの作成
@@ -339,6 +343,7 @@ class Application(tk.Frame):
 
         # ボタンクリックに対してキーイベント処理を実装
         # self.button.bind("<ButtonPress>", self.type_event)
+
 
         # ウィジェットの設置
         self.radio0.pack()
@@ -387,8 +392,7 @@ class Application(tk.Frame):
 
             self.result_label.configure(text="残念！", fg="blue")
 
-        # 解答欄をクリア
-        self.ans_label2 = ""
+
 
         # 次の問題を出題
         self.index += 1
@@ -409,6 +413,7 @@ class Application(tk.Frame):
         self.log("problem_switching", "-", "concentrate", "-", False)
         # "OK"のボタンを押したかどうか
         self.next = False
+
 
     def timer(self):
         self.second = 0
@@ -441,6 +446,7 @@ class Application(tk.Frame):
                 count += 1
                 movie()
                 return 0
+
 
     def log(self, situation, correct, action, judge, flag):
         # logに書き込み
