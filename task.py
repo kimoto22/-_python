@@ -12,7 +12,7 @@ from tkinter import messagebox
 import pyautogui as pag
 
 global interval
-interval = 120
+interval = 10
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
 print("画面サイズの高さ：", scr_h)
