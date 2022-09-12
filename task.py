@@ -1,16 +1,23 @@
-import sys
 import tkinter as tk
 import time
 import threading
-import random
 import datetime
 import pandas as pd
 import video
 import audio
+import random
 from tkinter import messagebox
+import pyautogui as pag
+
+global interval
+interval = 120
+scr_w, scr_h = pag.size()
+print('画面サイズの幅：',scr_w)
+print('画面サイズの高さ：',scr_h)
 
 video = video.Video()
 audio = audio.Audio()
+
 
 def QUESTION():
     one = random.randint(10, 20)
@@ -36,13 +43,13 @@ def QUESTION():
 
 
 ####切り替えボタン####
-def change(sence):
+def change():
     global canvas2
     canvas2 = tk.Canvas(root, highlightthickness=0)
     canvas2.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
     # 各種ウィジェットの作成
     label1_frame_app = tk.Label(canvas2, text="準備ができたら課題に進んでください", font=("",40))
-    button_change_frame_app = tk.Button(canvas2, text="進む", font=("",40),command=sence)
+    button_change_frame_app = tk.Button(canvas2, text="進む", font=("",40),command= lambda: task_select())
     # 各種ウィジェットの設置
     label1_frame_app.pack(anchor='center',expand=1)
     button_change_frame_app.pack(anchor='center',expand=1)
@@ -62,11 +69,13 @@ def timecount(canvas,video,audio):
         print(str(elapsed_minute).zfill(2) + ":" + str(elapsed_second).zfill(2))
         #time_label.configure(text=f"経過時間：{str(elapsed_minute).zfill(2)}:{str(elapsed_second).zfill(2)}")
 
-        if second==3:
-            #video.stop()
+        #print(interval)
+        if second==interval:
+            video.stop()
             audio.stop()
             canvas.destroy()
-            change(math)
+            change()
+            flg = False
 
             return 0
 
@@ -93,18 +102,111 @@ def movie():
     label.pack_forget()
     time.sleep(3)
 
+####課題選択####
+def task_select():
+    canvas2.destroy()
+    canvas1 = tk.Canvas(root, highlightthickness=0 )#,bg = "cyan")
+    canvas1.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
+    print("count:"+str(count))
+    if count % 2==0:
+        eye_task(master=canvas1)
+    else:
+        Application(master=canvas1)
+    #print(App)
+
 ####視線課題####
-"""def eye_task:
-    canvas2.destroy()"""
+
+class eye_task(tk.Frame):
+    def __init__(self, master):
+        super().__init__(master)
+        #self.pack()
+        self.column_data = (0, 0, 1, 1)
+        self.row_data = (0, 1, 0, 1)
+        self.text = self.random_symbol()
+        self.flg = True
+
+        self.symbol=[]
+        self.button=[]
+        for i in range(4):
+            self.symbol.append(tk.StringVar())
+            self.symbol[i].set(self.text[i][0])
+            #print(self.symbol[i])
+            self.button.append(tk.Button(self.master,textvariable=self.symbol[i],fg = self.text[i][1], font=("",100)))
+            self.button[i].grid(column = self.column_data[i], row = self.row_data[i],padx=30,pady=30, sticky = 'nsew')
+            # ボタンクリック時のイベント設定
+            self.button[i].bind("<ButtonPress>",self.button_func)
+
+        self.master.grid_columnconfigure(0, weight = 1)
+        self.master.grid_columnconfigure(1, weight = 1)
+        self.master.grid_rowconfigure(0, weight = 1)
+        self.master.grid_rowconfigure(1, weight = 1)
+
+        # 経過時間スレッドの開始
+        self.t = threading.Thread(target=self.timer,daemon=True)
+        self.t.start()
+
+    def random_symbol(self):#問題作成
+        self.text = [["〇","red"]]
+        self.label = ["〇","△","□","×"]
+        self.color = ["red","green","blue","yellow"]
+
+        for i in range(3):
+            self.a = random.choice(self.label)
+            self.b = random.choice(self.color)
+            while (self.a == "〇" and self.b == "red"):
+                self.a = random.choice(self.label)
+                self.b = random.choice(self.color)
+            self.text.append([self.a,self.b])
+        random.shuffle(self.text)
+        return self.text
+
+    def button_func(self,event):
+        #event.widget.config(fg="red")
+        print("形:"+event.widget.cget("text") + "　色:" +event.widget.cget("fg"))
+        for i in range(4):
+            self.button[i].grid_forget()
+        self.master.create_text(scr_w/2, scr_h/2, text="●",font=("",40) ,tag="line")
+
+        #1000ms後にchange_label_textを実行
+        root.after(
+            1000,
+            self.change_label_text,
+        )
+
+    def timer(self):
+        self.second = 0
+        self.flg = True
+        #print(self.second)
+        while self.flg:
+            print(self.second)
+            self.second += 1
+            time.sleep(1)
+
+            # 2分経ったら
+            if self.second == interval:
+                self.second = 0
+                self.destroy()
+                self.master.destroy()
+                global count
+                count+=1
+                self.flg = False
+                print("----------------------")
+                movie()
+
+                return 0
+
+    def change_label_text(self):
+        self.text=self.random_symbol()
+        print(self.flg)
+        if self.flg == True:
+            self.master.delete("line")
+            for i in range(4):
+                self.symbol[i].set(self.text[i][0])
+                self.button[i]["fg"] = self.text[i][1]
+                self.button[i].grid(column = self.column_data[i], row = self.row_data[i],padx=30,pady=30, sticky = 'nsew')
+
 
 ####計算課題####
-def math():
-    canvas2.destroy()
-    canvas1 = tk.Canvas(root, highlightthickness=0)
-    canvas1.pack(fill=tk.BOTH, expand=True) # configure canvas to occupy the whole main window
-
-    App = Application(master=canvas1)
-    print(App)
 
 class Application(tk.Frame):
     def __init__(self, master):
@@ -269,7 +371,7 @@ class Application(tk.Frame):
             time.sleep(1)
 
             # 2分経ったら
-            if self.second == 1:
+            if self.second == interval:
 
                 self.q_label2.configure(text="")
                 messagebox.showinfo("リザルト", f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。")
@@ -284,6 +386,8 @@ class Application(tk.Frame):
                 self.destroy()
                 self.master.destroy()
 
+                global count
+                count+=1
                 movie()
                 return 0
 
@@ -296,24 +400,26 @@ class Application(tk.Frame):
         data = [[time, situation, correct,action, judge]]
         self.df1 = pd.DataFrame(data, columns=self.columes)
         self.df = pd.concat([self.df, self.df1], axis=0)
-        print(flag)
+       # print(flag)
 
         if flag==False:
             # log書き出し
             dt_now = datetime.datetime.now()
             self.df.to_csv(".\\log_dir\\{}.csv".format(dt_now.strftime('%Y-%m-%d-%H-%M')), index=False)
-            print("READ")
+            #print("READ")
 
 
 if __name__ == "__main__":
     root = tk.Tk()
     #root.geometry("1280x720")
     #root.state("zoomed")
+    global count
+    count = 1
     root.attributes('-fullscreen', True)
     root.title("タイピングゲーム！")
 
-    change(math)    #シーン変更先
-
+    change()    #シーン変更先
+    #change(eye_task)
     #root.protocol("WM_DELETE_WINDOW", App.click_close)
     root.mainloop()
 # https://max999blog.com/pandas-add-row-to-dataframe/

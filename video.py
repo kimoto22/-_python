@@ -14,6 +14,7 @@ class Video():
             ".mov .avi .mpg .mpeg .mp4 .mkv .wmv .webm",
             "I",
         )
+        self._stop = threading.Event()
         imageio.formats.add_format(format,True)#webm に対応させる。(だいぶ強引に)
     def openfile(self, file_path,frame):
         self.frame = frame
@@ -26,14 +27,21 @@ class Video():
         self.video_thread = threading.Thread(target=self._stream)
         self.video_thread.setDaemon(True)
         self.video_thread.start()
+        #global
+        self.flg=True
+
     def stop(self):
-        self.video_thread.stop()
+        self._stop.set()
+        self.flg=False
     def _stream(self):
         start_time=time.time()
         sleeptime = 1/self.video.get_meta_data()["fps"]
         print(self.video.get_meta_data()["fps"])
         frame_now = 0
         for image in self.video.iter_data():
+            #print(self.flg)
+            if self.flg==False:
+                break
             frame_now = frame_now + 1
             if frame_now*sleeptime >= time.time()-start_time:
                 frame_image = ImageTk.PhotoImage(Image.fromarray(image))
