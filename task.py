@@ -55,7 +55,6 @@ def change():
     button_change_frame_app.pack(anchor='center',expand=1)
 
 ####relax動画####
-
 def timecount(canvas,video,audio):
     second = 0
     flg = True

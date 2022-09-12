@@ -51,7 +51,6 @@ def button_func(event):
     for i in range(4):
         button[i].grid_forget()
 
-
     #canvas.create_line(20, 10, 280, 190, fill = "Red", width = 5, tag="line")
     canvas.create_text(scr_w/2, scr_h/2, text="●",font=("",40) ,tag="line")
 
