@@ -10,6 +10,7 @@ import audio
 import random
 from tkinter import messagebox
 import pyautogui as pag
+import os
 
 global interval
 interval = 10
@@ -20,9 +21,10 @@ print("画面サイズの高さ：", scr_h)
 video = video.Video()
 audio = audio.Audio()
 
+
 def QUESTION():
-    one = random.randint(10, 20)
-    two = random.randint(1, 9)
+    one = random.randint(50, 200)
+    two = random.randint(1, 49)
     hugo_index = random.randint(0, 2)
 
     random_radiobutton = random.randint(0, 3)
@@ -55,6 +57,14 @@ def change():
     button_change_frame_app = tk.Button(
         canvas2, text="進む", font=("", 40), command=lambda: task_select()
     )
+    # logに書き込み
+    log.logging(
+        situation="準備ができたら課題に進んでください",
+        action="-",
+        user_input="-",
+        correct="-",
+        judge="-",
+    )
     # 各種ウィジェットの設置
     label1_frame_app.pack(anchor="center", expand=1)
     button_change_frame_app.pack(anchor="center", expand=1)
@@ -85,6 +95,7 @@ def timecount(canvas, video, audio):
 
             return 0
 
+
 def movie():
     canvas = tk.Canvas(root, highlightthickness=0)
     canvas.pack(
@@ -92,6 +103,17 @@ def movie():
     )  # configure canvas to occupy the whole main window
     label = tk.Label(canvas, text="2分間休憩時間です", font=("", 40))
     label.pack(anchor="center", expand=1)
+
+    # logに書き込み
+    log.logging(
+        situation="リラックスモードモードに移行",
+        action="-",
+        user_input="-",
+        correct="-",
+        judge="-",
+    )
+
+
     # sleep 前のエポック秒(UNIX時間)を取得
     startSec = time.time()
     time.sleep(1)
@@ -107,6 +129,15 @@ def movie():
     )
     thread.start()
 
+    # logに書き込み
+    log.logging(
+        situation="リラックスモードモード",
+        action="-",
+        user_input="-",
+        correct="-",
+        judge="-",
+    )
+
     audio.play()
     video.play()
     label.pack_forget()
@@ -121,11 +152,20 @@ def task_select():
         fill=tk.BOTH, expand=True
     )  # configure canvas to occupy the whole main window
     print("count:" + str(count))
+
+    # logに書き込み
+    log.logging(
+        situation="準備ができたら課題に進んでください",
+        action="-",
+        user_input="進むボタンを押した",
+        correct="-",
+        judge="-",
+    )
+
     if count % 2 == 0:
         eye_task(master=canvas1)
     else:
         Application(master=canvas1)
-    # print(App)
 
 
 ####視線課題####
@@ -258,13 +298,6 @@ class Application(tk.Frame):
 
         self.create_widgets()
 
-        self.columes = ["time", "action", "correct", "situation", "judge"]
-        dt_now = datetime.datetime.now()
-        time = dt_now.strftime("%Y-%m-%d %H:%M:%S.%f")
-        data = [[time, "start", "-", "-", "-"]]
-        # self.df = pd.DataFrame(data, index=self.columes)
-        self.df = pd.DataFrame(data, columns=self.columes)
-
         # 経過時間スレッドの開始
         self.t = threading.Thread(target=self.timer, daemon=True)
         self.t.start()
@@ -344,7 +377,6 @@ class Application(tk.Frame):
         # ボタンクリックに対してキーイベント処理を実装
         # self.button.bind("<ButtonPress>", self.type_event)
 
-
         # ウィジェットの設置
         self.radio0.pack()
         self.radio1.pack()
@@ -376,6 +408,7 @@ class Application(tk.Frame):
 
     # キー入力時のイベント処理
     def button_click(self):
+        global log
         value = self.radio_value.get()
         self.ans_label2 = value
         # 入力値の答え合わせ
@@ -383,16 +416,27 @@ class Application(tk.Frame):
         print(f"押した答え:{self.ans_label2},本当の答え：{self.ans}")
         if str(self.ans) == str(self.ans_label2):
             # logに書き込み
-            self.log(self.ans_label2, self.ans, "concentrate", "correct", False)
+            log.logging(
+                situation="集中",
+                action="userがボタン入力",
+                user_input=str(self.ans_label2),
+                correct=str(self.ans),
+                judge="正解",
+            )
+
             self.result_label.configure(text="正解！", fg="red")
             self.correct_cnt += 1
         else:
             # logに書き込み
-            self.log(self.ans_label2, self.ans, "concentrate", "miss", False)
+            log.logging(
+                situation="集中",
+                action="userがボタン入力",
+                user_input=str(self.ans_label2),
+                correct=str(self.ans),
+                judge="不正解",
+            )
 
             self.result_label.configure(text="残念！", fg="blue")
-
-
 
         # 次の問題を出題
         self.index += 1
@@ -410,10 +454,8 @@ class Application(tk.Frame):
         self.radio3.configure(
             text=str(radio_button_list[3]), value=str(radio_button_list[3])
         )
-        self.log("problem_switching", "-", "concentrate", "-", False)
         # "OK"のボタンを押したかどうか
         self.next = False
-
 
     def timer(self):
         self.second = 0
@@ -433,7 +475,6 @@ class Application(tk.Frame):
                 )
 
                 # logに書き込み
-                self.log("-", "-", "relax", "-", False)
                 # root.destroy()
 
                 # quit_me(root)
@@ -448,24 +489,74 @@ class Application(tk.Frame):
                 return 0
 
 
-    def log(self, situation, correct, action, judge, flag):
-        # logに書き込み
+# log
+
+
+class Log:
+    def first_log(self, first_time):
+        self.first_time = first_time
+
+    def logging(
+        self, situation: str, action: str, user_input: str, correct: str, judge: str
+    ):
+        self.situation = situation
+        self.action = action
+        self.user_input = user_input
+        self.correct = correct
+        self.judge = judge
+
+        filepath = f".\\log_dir\\{self.first_time}.csv"
+        columns = ["時間", "状態", "アクション", "ユーザーの入力", "正解値", "正誤判定"]
+
         dt_now = datetime.datetime.now()
-        time = dt_now.strftime("%Y-%m-%d %H:%M:%S.%f")
+        time = dt_now.strftime("%Y-%m-%d-%H-%M-%S")
+        # self.log_data = {
+        #     "time": [],
+        #     "situation": [],
+        #     "action": [],
+        #     "user_input": [],
+        #     "correct": [],
+        #     "judge": [],
+        # }
+        self.log_data = {
+            "時間": [],
+            "状態": [],
+            "アクション": [],
+            "ユーザーの入力": [],
+            "正解値": [],
+            "正誤判定": [],
+        }
+        # self.log_data["time"].append(time)
+        # self.log_data["situation"].append(self.situation)
+        # self.log_data["action"].append(self.action)
+        # self.log_data["user_input"].append(self.user_input)
+        # self.log_data["correct"].append(self.correct)
+        # self.log_data["judge"].append(self.judge)
 
-        data = [[time, situation, correct, action, judge]]
-        self.df1 = pd.DataFrame(data, columns=self.columes)
-        self.df = pd.concat([self.df, self.df1], axis=0)
-        # print(flag)
+        self.log_data["時間"].append(time)
+        self.log_data["状態"].append(self.situation)
+        self.log_data["アクション"].append(self.action)
+        self.log_data["ユーザーの入力"].append(self.user_input)
+        self.log_data["正解値"].append(self.correct)
+        self.log_data["正誤判定"].append(self.judge)
 
-        if flag == False:
-            # log書き出し
-            dt_now = datetime.datetime.now()
-            self.df.to_csv(
-                ".\\log_dir\\{}.csv".format(dt_now.strftime("%Y-%m-%d-%H-%M")),
+        if os.path.isfile(filepath):
+            df1 = pd.read_csv(filepath, encoding="shift_jis")
+            df2 = pd.DataFrame(self.log_data)
+            df = pd.merge(df1, df2, how="outer")
+            df.to_csv(
+                filepath,
+                encoding="shift_jis",
                 index=False,
             )
-            # print("READ")
+        else:
+            df = pd.DataFrame(self.log_data)
+            df.to_csv(
+                filepath,
+                encoding="shift_jis",
+                index=False,
+                columns=columns
+            )
 
 
 if __name__ == "__main__":
@@ -476,6 +567,16 @@ if __name__ == "__main__":
     count = 1
     root.attributes("-fullscreen", True)
     root.title("タイピングゲーム！")
+
+    dt_now = datetime.datetime.now()
+    now = dt_now.strftime("%Y-%m-%d-%H-%M-%S")
+    global log
+    log = Log()
+    log.first_log(now)
+    # logに書き込み
+    log.logging(situation="課題スタート", action="-", user_input="-", correct="-", judge="-")
+
+    # log.log_to_csv()
 
     change()  # シーン変更先
     # change(eye_task)
