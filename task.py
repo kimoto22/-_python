@@ -2,7 +2,6 @@ import sys
 import tkinter as tk
 import time
 import threading
-import random
 import datetime
 import pandas as pd
 import video
@@ -10,9 +9,66 @@ import audio
 import random
 from tkinter import messagebox
 import pyautogui as pag
+import os
+os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
+import cv2
+print("cv2"+str(cv2.__version__))
+
+def click_close():
+    if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
+        cap.release()
+        out.release()
+        cv2.destroyAllWindows()
+        root.destroy()
+        return 0
+
+def close():
+    cap.release()
+    out.release()
+    cv2.destroyAllWindows()
+    root.destroy()
+
+
+def record(cap, out, f):
+    tm=cv2.TickMeter()
+    tm.start()
+    count = 0
+    count1 = 0
+    max_count = 1
+    fps = 0
+    n = 0
+    # 撮影＝ループ中にフレームを1枚ずつ取得（qキーで撮影終了）
+    while(cap.isOpened()):
+        ret, frame = cap.read()                           # フレームを取得
+        if ret == True:
+            if count == max_count:
+                tm.stop()
+                fps = max_count / tm.getTimeSec()
+                tm.reset()
+                tm.start()
+                count = 0
+            cv2.putText(frame, 'FPS: {:.2f}'.format(fps),(10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 255), thickness=2)
+            #cv2.putText(frame, 'Frame:{:.0f}'.format(count1),(1000, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 255), thickness=2)
+            out.write(frame)
+            cv2.imshow('camera', frame)                            # フレームを画面に表示
+            f.write(str(count1) + "," + str(fps) + "\n")
+            count1 += 1
+            count += 1
+            # キー操作があればwhileループを抜ける
+            k = cv2.waitKey(33)
+            if k == 27:    # Esc key to stop
+                break
+        else:
+            break
+    # 撮影用オブジェクトとウィンドウの解放
+    f.close()
+    cap.release()
+    out.release()
+    cv2.destroyAllWindows()
+
 
 global interval
-interval = 10
+interval = 3
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
 print("画面サイズの高さ：", scr_h)
@@ -53,7 +109,7 @@ def change():
     # 各種ウィジェットの作成
     label1_frame_app = tk.Label(canvas2, text="準備ができたら課題に進んでください", font=("", 40))
     button_change_frame_app = tk.Button(
-        canvas2, text="進む", font=("", 40), command=lambda: task_select()
+        canvas2, text="進む", font=("", 40), bg="grey", command=lambda: task_select()
     )
     # 各種ウィジェットの設置
     label1_frame_app.pack(anchor="center", expand=1)
@@ -94,9 +150,8 @@ def movie():
     label.pack(anchor="center", expand=1)
     # sleep 前のエポック秒(UNIX時間)を取得
     startSec = time.time()
-    time.sleep(1)
-    # sleep していた秒数を計算して表示
-    print(time.time() - startSec)
+
+
     canvas.frame = tk.Label(canvas)
     canvas.frame.pack(side=tk.BOTTOM)
     video.openfile("./relax.mp4", canvas.frame)
@@ -107,11 +162,23 @@ def movie():
     )
     thread.start()
 
-    audio.play()
+    """audio.play()
     video.play()
-    label.pack_forget()
-    time.sleep(3)
+    label.pack_forget()"""
+    # sleep していた秒数を計算して表示
+    print(time.time() - startSec)
+    #time.sleep(3)
 
+def end(canvas):
+    label = tk.Label(canvas, text="課題は終了です。", font=("", 40))
+    label1 = tk.Label(canvas, text="お疲れ様でした。", font=("", 40))
+    label.pack(anchor="center", expand=1)
+    label1.pack(anchor="center", expand=1)
+
+    root.after(
+        3000,
+        close
+    )
 
 ####課題選択####
 def task_select():
@@ -121,10 +188,14 @@ def task_select():
         fill=tk.BOTH, expand=True
     )  # configure canvas to occupy the whole main window
     print("count:" + str(count))
-    if count % 2 == 0:
+    if count == 2:
+        end(canvas1)
+    elif count % 2 == 0:
         eye_task(master=canvas1)
     else:
         Application(master=canvas1)
+
+
     # print(App)
 
 
@@ -133,10 +204,32 @@ def task_select():
 
 class eye_task(tk.Frame):
     def __init__(self, master):
+        """# 1000ms後にchange_label_textを実行
+        root.after(
+            10000,
+            self.explanation,
+        )"""
         super().__init__(master)
         # self.pack()
         self.column_data = (0, 0, 1, 1)
         self.row_data = (0, 1, 0, 1)
+        # 各種ウィジェットの作成
+        self.label1_frame_app = tk.Label(self.master, text="〇", font=("", 100),fg="red")
+        self.label2_frame_app = tk.Label(self.master, text="を選択・クリックしてください", font=("", 40))
+        self.button_change_frame_app = tk.Button(
+            self.master, text="課題に進む", font=("", 40), bg="grey", command=lambda: self.rocate()
+        )
+        # 各種ウィジェットの設置
+        self.label1_frame_app.pack(anchor="center", expand=1)
+        self.label2_frame_app.pack(anchor="center", expand=1)
+        self.button_change_frame_app.pack(anchor="center", expand=1)
+
+
+    def rocate(self):
+        self.label1_frame_app.pack_forget()
+        self.label2_frame_app.pack_forget()
+        self.button_change_frame_app.pack_forget()
+
         self.text = self.random_symbol()
         self.flg = True
 
@@ -173,6 +266,17 @@ class eye_task(tk.Frame):
         self.t = threading.Thread(target=self.timer, daemon=True)
         self.t.start()
 
+    """####切り替えボタン####
+    def explanation(self):
+        # 各種ウィジェットの作成
+        self.label1_frame_app = tk.Label(self.master, text="準備ができたら課題に進んでください", font=("", 40))
+        self.button_change_frame_app = tk.Button(
+            self.master, text="進む", font=("", 40), command=lambda: task_select()
+        )
+        # 各種ウィジェットの設置
+        self.label1_frame_app.pack(anchor="center", expand=1)
+        #self.button_change_frame_app.pack(anchor="center", expand=1)"""
+
     def random_symbol(self):  # 問題作成
         self.text = [["〇", "red"]]
         self.label = ["〇", "△", "□", "×"]
@@ -187,6 +291,7 @@ class eye_task(tk.Frame):
             self.text.append([self.a, self.b])
         random.shuffle(self.text)
         return self.text
+
 
     def button_func(self, event):
         # event.widget.config(fg="red")
@@ -249,13 +354,31 @@ class Application(tk.Frame):
     def __init__(self, master):
         super().__init__(master)
         self.pack()
-
         # 問題数インデックス
         self.index = 0
-
         # 正解数カウント用
         self.correct_cnt = 0
 
+
+        # self.pack()
+        self.column_data = (0, 0, 1, 1)
+        self.row_data = (0, 1, 0, 1)
+        # 各種ウィジェットの作成
+        self.label1_frame_app = tk.Label(self.master, text="2桁の ＋,－,× を行います", font=("", 40))#,fg="red")
+        self.label2_frame_app = tk.Label(self.master, text="4択のうち正しい答えを選択し決定してください", font=("", 40))
+        self.button_change_frame_app = tk.Button(
+            self.master, text="課題に進む", font=("", 40), bg="grey", command=lambda: self.rocate()
+        )
+        # 各種ウィジェットの設置
+        self.label1_frame_app.pack(anchor="center", expand=1)
+        self.label2_frame_app.pack(anchor="center", expand=1)
+        self.button_change_frame_app.pack(anchor="center", expand=1)
+
+
+    def rocate(self):
+        self.label1_frame_app.pack_forget()
+        self.label2_frame_app.pack_forget()
+        self.button_change_frame_app.pack_forget()
         self.create_widgets()
 
         self.columes = ["time", "action", "correct", "situation", "judge"]
@@ -271,11 +394,6 @@ class Application(tk.Frame):
 
         # Tkインスタンスに対してキーイベント処理を実装
         # self.master.bind("<KeyPress>", self.type_event)
-
-    def click_close(self):
-        if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
-            root.destroy()
-            return 0
 
     # ウィジェットの生成と配置
     def create_widgets(self):
@@ -469,6 +587,43 @@ class Application(tk.Frame):
 
 
 if __name__ == "__main__":
+    #dt_now = datetime.datetime.now()
+    dt_before = datetime.datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
+    #dt_before = datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
+    print("カメラを起動した時刻"+str(dt_before))
+    cap = cv2.VideoCapture(1)
+
+    fps = 30
+    w = 1280
+    h = 720
+    #cap.set(cv2.CAP_PROP_FPS, fps)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, w)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, h)
+    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'));
+    # 動画ファイル保存用の設定
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    print(fps)# カメラのFPSを取得
+    int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))              # カメラの横幅を取得
+    int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))             # カメラの縦幅を取得
+    fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')     # 動画保存時のfourcc設定（mp4用）
+
+    dt_after = datetime.datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
+    #dt_after = datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
+    print("カメラを起動後の時刻"+str(dt_after))
+    name="./camera/test"
+    txt_name = str(name)+'.txt'
+    f = open(str(txt_name), 'w')
+    print(f)
+    camera_name = str(name)+'_video.mp4'
+    out = cv2.VideoWriter(str(camera_name), fourcc, fps, (w, h))  # 動画の仕様（ファイル名、fourcc, FPS, サイズ）
+    dt_after = datetime.datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
+    #dt_after = datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
+    print("カメラを起動後の時刻"+str(dt_after))
+    f.write("カメラを起動した時刻,"+str(dt_before)+"\nカメラを起動後の時刻,"+str(dt_after)+"\n解像度,"+str(w)+"×"+str(h)+"\n動画FPS,"+str(fps)+"\n")
+    f.write("フレーム数,FPS\n")
+    thread = threading.Thread(name="thread", target=record, args=[cap, out, f], daemon=True)
+    thread.start()
+
     root = tk.Tk()
     # root.geometry("1280x720")
     # root.state("zoomed")
@@ -479,6 +634,6 @@ if __name__ == "__main__":
 
     change()  # シーン変更先
     # change(eye_task)
-    # root.protocol("WM_DELETE_WINDOW", App.click_close)
+    root.protocol("WM_DELETE_WINDOW", click_close)
     root.mainloop()
 # https://max999blog.com/pandas-add-row-to-dataframe/
