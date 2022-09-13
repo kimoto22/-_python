@@ -13,7 +13,18 @@ import pyautogui as pag
 import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 import cv2
-print("cv2"+str(cv2.__version__))
+from PIL import Image, ImageTk # ← 追加
+
+global interval
+interval = 10
+scr_w, scr_h = pag.size()
+print("画面サイズの幅：", scr_w)
+print("画面サイズの高さ：", scr_h)
+
+video = video.Video()
+audio = audio.Audio()
+
+task_count=7
 
 def click_close():
     if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
@@ -68,14 +79,7 @@ def record(cap, out, f):
     cv2.destroyAllWindows()
 
 
-global interval
-interval = 10
-scr_w, scr_h = pag.size()
-print("画面サイズの幅：", scr_w)
-print("画面サイズの高さ：", scr_h)
 
-video = video.Video()
-audio = audio.Audio()
 
 def QUESTION():
     one = random.randint(50, 200)
@@ -142,8 +146,8 @@ def timecount(canvas, video, audio):
 
         # print(interval)
         if second == interval:
-            video.stop()
-            audio.stop()
+            #video.stop()
+            #audio.stop()
             canvas.destroy()
             change()
             flg = False
@@ -152,10 +156,11 @@ def timecount(canvas, video, audio):
 
 
 def movie():
+
     canvas = tk.Canvas(root, highlightthickness=0)
     canvas.pack(
         fill=tk.BOTH, expand=True
-    )  # configure canvas to occupy the whole main window
+    )
     label = tk.Label(canvas, text="2分間休憩時間です", font=("", 40))
     label.pack(anchor="center", expand=1)
 
@@ -168,15 +173,31 @@ def movie():
         judge="-",
     )
 
-
     # sleep 前のエポック秒(UNIX時間)を取得
-    startSec = time.time()
-
+    #startSec = time.time()
 
     canvas.frame = tk.Label(canvas)
     canvas.frame.pack(side=tk.BOTTOM)
-    video.openfile("./relax.mp4", canvas.frame)
-    audio.openfile("./relax.wav")
+    image = Image.open("relax.png")
+    global photo
+    photo = ImageTk.PhotoImage(image)
+
+    Q=[label,canvas]
+    root.after(
+        5000,
+        image_de,
+        Q
+    )
+
+def image_de(Q):
+    label=Q[0]
+    canvas=Q[1]
+    label.pack_forget()
+    canvas.create_image(scr_w / 2,       # 画像表示位置(Canvasの中心)
+                        scr_h / 2,
+                        image=photo)
+    #video.openfile("./relax.mp4", canvas.frame)
+    #audio.openfile("./relax.wav")
     # 経過時間スレッドの開始
     thread = threading.Thread(
         name="thread", target=timecount, args=[canvas, video, audio], daemon=True
@@ -191,13 +212,10 @@ def movie():
         correct="-",
         judge="-",
     )
+    #audio.play()
+    #video.play()
+    #label.pack_forget()
 
-    """audio.play()
-    video.play()
-    label.pack_forget()"""
-    # sleep していた秒数を計算して表示
-    print(time.time() - startSec)
-    #time.sleep(3)
 
 def end(canvas):
     label = tk.Label(canvas, text="課題は終了です。", font=("", 40))
@@ -228,7 +246,7 @@ def task_select():
         judge="-",
     )
 
-    if count == 2:
+    if count == task_count:
         end(canvas1)
     elif count % 2 == 0:
         eye_task(master=canvas1)
