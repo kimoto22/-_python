@@ -82,7 +82,7 @@ def record(cap, out, f):
 
 
 def QUESTION():
-    one = random.randint(50, 200)
+    one = random.randint(50, 99)
     two = random.randint(1, 49)
     hugo_index = random.randint(0, 2)
 
@@ -684,7 +684,7 @@ if __name__ == "__main__":
     dt_before = datetime.datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
     #dt_before = datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
     print("カメラを起動した時刻"+str(dt_before))
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
 
     fps = 30
     w = 1280
