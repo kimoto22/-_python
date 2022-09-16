@@ -13,7 +13,18 @@ import pyautogui as pag
 import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 import cv2
-print("cv2"+str(cv2.__version__))
+from PIL import Image, ImageTk # ← 追加
+
+global interval
+interval = 10
+scr_w, scr_h = pag.size()
+print("画面サイズの幅：", scr_w)
+print("画面サイズの高さ：", scr_h)
+
+video = video.Video()
+audio = audio.Audio()
+
+task_count=7
 
 def click_close():
     if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
@@ -68,14 +79,7 @@ def record(cap, out, f):
     cv2.destroyAllWindows()
 
 
-global interval
-interval = 10
-scr_w, scr_h = pag.size()
-print("画面サイズの幅：", scr_w)
-print("画面サイズの高さ：", scr_h)
 
-video = video.Video()
-audio = audio.Audio()
 
 def QUESTION():
     one = random.randint(50, 200)
@@ -228,7 +232,7 @@ def task_select():
         judge="-",
     )
 
-    if count == 2:
+    if count == task_count:
         end(canvas1)
     elif count % 2 == 0:
         eye_task(master=canvas1)
