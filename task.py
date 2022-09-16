@@ -16,7 +16,7 @@ import cv2
 from PIL import Image, ImageTk # ← 追加
 
 global interval
-interval = 10
+interval = 3
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
 print("画面サイズの高さ：", scr_h)
@@ -155,7 +155,8 @@ def timecount(canvas, video, audio):
             return 0
 
 
-def movie():
+def movie(canvas1):
+    canvas1.destroy()
     canvas = tk.Canvas(root, highlightthickness=0)
     canvas.pack(
         fill=tk.BOTH, expand=True
@@ -181,6 +182,17 @@ def movie():
     canvas.frame.pack(side=tk.BOTTOM)
     video.openfile("./relax.mp4", canvas.frame)
     audio.openfile("./relax.wav")
+    Q=[label,canvas]
+    root.after(
+        5000,
+        image_de,
+        Q
+    )
+
+def image_de(Q):
+    label=Q[0]
+    canvas=Q[1]
+    label.pack_forget()
     # 経過時間スレッドの開始
     thread = threading.Thread(
         name="thread", target=timecount, args=[canvas, video, audio], daemon=True
@@ -196,12 +208,10 @@ def movie():
         judge="-",
     )
 
-    """audio.play()
+    audio.play()
     video.play()
-    label.pack_forget()"""
-    # sleep していた秒数を計算して表示
-    print(time.time() - startSec)
-    #time.sleep(3)
+
+
 
 def end(canvas):
     label = tk.Label(canvas, text="課題は終了です。", font=("", 40))
@@ -239,11 +249,40 @@ def task_select():
     else:
         Application(master=canvas1)
     # print(App)
+####アンケート評価####
+def questionnaire():
+    canvas = tk.Canvas(root, highlightthickness=0)
+    canvas.pack(
+        fill=tk.BOTH, expand=True
+    )  # configure canvas to occupy the whole main window
+
+    # Radiobutton 1
+    v1 = tk.StringVar()
+    rb1 = tk.Radiobutton(
+        canvas,
+        text='Option A',
+        value='A',
+        variable=v1)
+
+    # Radiobutton 2
+    rb2 = tk.Radiobutton(
+        canvas,
+        text='Option B',
+        value='B',
+        variable=v1)
+
+    # Button
+    button1 = tk.Button(
+    canvas, text="進む", font=("", 40), bg="grey", command=lambda: movie(canvas)
+    )
+
+    rb1.pack()
+    rb2.pack()
+    button1.pack()
+
 
 
 ####視線課題####
-
-
 class eye_task(tk.Frame):
     def __init__(self, master):
 
@@ -307,7 +346,7 @@ class eye_task(tk.Frame):
     def random_symbol(self):  # 問題作成
         self.text = [["〇", "red"]]
         self.label = ["〇", "△", "□", "×"]
-        self.color = ["red", "green", "blue", "yellow"]
+        self.color = ["red"]#, "green", "blue", "yellow"]
 
         for i in range(3):
             self.a = random.choice(self.label)
@@ -352,7 +391,7 @@ class eye_task(tk.Frame):
                 count += 1
                 self.flg = False
                 print("----------------------")
-                movie()
+                questionnaire()
 
                 return 0
 
@@ -591,7 +630,7 @@ class Application(tk.Frame):
 
                 global count
                 count += 1
-                movie()
+                questionnaire()
                 return 0
 
 
