@@ -205,7 +205,6 @@ def image_de(Q):
     video.play()
 
 
-
 def end(canvas):
     label = tk.Label(canvas, text="課題は終了です。", font=("", 40))
     label1 = tk.Label(canvas, text="お疲れ様でした。", font=("", 40))
@@ -259,6 +258,8 @@ def questionnaire():
                     )
     #ttk.Style().theme_use("alt")
     label = tk.Label(canvas, text="課題を通して自分の集中度を評価してください", font=("", 30))
+    #whi = tk.Label(canvas, text="", font=("", 30))
+
     # Radiobutton 1
     v1 = StringVar()
     rb1 = ttk.Radiobutton(
@@ -266,8 +267,7 @@ def questionnaire():
         text="1.集中していた",
         value='1',
         style='MyWidget.TRadiobutton',
-        #command=lambda: radio_click(canvas),
-        variable=v1)
+        variable=v1, command =lambda: change_state)
 
     # Radiobutton 2
     rb2 = ttk.Radiobutton(
@@ -275,7 +275,7 @@ def questionnaire():
         text='2.少し集中していた',
         value='2',
         style='MyWidget.TRadiobutton',
-        variable=v1)
+        variable=v1, command = lambda: change_state)
 
     # Radiobutton 2
     rb3 = ttk.Radiobutton(
@@ -283,7 +283,7 @@ def questionnaire():
         text='3.どちらでもない',
         value='3',
         style='MyWidget.TRadiobutton',
-        variable=v1)
+        variable=v1, command = lambda: change_state(button1))
 
     # Radiobutton 2
     rb4 = ttk.Radiobutton(
@@ -291,7 +291,7 @@ def questionnaire():
         text='4.少し集中できなかった',
         value='4',
         style='MyWidget.TRadiobutton',
-        variable=v1)
+        variable=v1, command = lambda: change_state(button1))
 
     # Radiobutton 2
     rb5 = ttk.Radiobutton(
@@ -299,7 +299,7 @@ def questionnaire():
         text='5.全く集中できなかった',
         value='5',
         style='MyWidget.TRadiobutton',
-        variable=v1)
+        variable=v1, command = lambda: change_state(button1))
 
     # Button
     button1 = tk.Button(
@@ -307,6 +307,7 @@ def questionnaire():
         text='OK',
         font=("", 30),
         command=lambda: movie(canvas,v1),
+        state=tk.DISABLED,
         bg="grey")
 
     label.pack(anchor="center",expand=1)
@@ -317,6 +318,9 @@ def questionnaire():
     rb5.pack(anchor="center",pady=20)
     button1.pack(anchor="center", expand=1)
 
+def change_state(button1):
+    if button1["state"] == tk.DISABLED:
+        button1["state"] = tk.NORMAL
 
 ####視線課題####
 class eye_task(tk.Frame):
