@@ -267,7 +267,7 @@ def questionnaire():
         text="1.集中していた",
         value='1',
         style='MyWidget.TRadiobutton',
-        variable=v1, command =lambda: change_state)
+        variable=v1, command =lambda: change_state(button1))
 
     # Radiobutton 2
     rb2 = ttk.Radiobutton(
@@ -275,7 +275,7 @@ def questionnaire():
         text='2.少し集中していた',
         value='2',
         style='MyWidget.TRadiobutton',
-        variable=v1, command = lambda: change_state)
+        variable=v1, command = lambda: change_state(button1))
 
     # Radiobutton 2
     rb3 = ttk.Radiobutton(
