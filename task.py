@@ -1,8 +1,8 @@
-import sys
+from tkinter import *
+from tkinter import ttk
 import tkinter as tk
 import time
 import threading
-import random
 import datetime
 import pandas as pd
 import video
@@ -13,7 +13,6 @@ import pyautogui as pag
 import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 import cv2
-from PIL import Image, ImageTk # ← 追加
 
 global interval
 interval = 3
@@ -28,20 +27,21 @@ task_count=7
 
 def click_close():
     if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
-        cap.release()
+        """cap.release()
         out.release()
         cv2.destroyAllWindows()
-        root.destroy()
+        root.destroy()"""
+        close()
         return 0
 
 def close():
-    cap.release()
+    """cap.release()
     out.release()
-    cv2.destroyAllWindows()
+    cv2.destroyAllWindows()"""
     root.destroy()
 
 
-def record(cap, out, f):
+"""def record(cap, out, f):
     tm=cv2.TickMeter()
     tm.start()
     count = 0
@@ -76,9 +76,7 @@ def record(cap, out, f):
     f.close()
     cap.release()
     out.release()
-    cv2.destroyAllWindows()
-
-
+    cv2.destroyAllWindows()"""
 
 
 def QUESTION():
@@ -255,31 +253,156 @@ def questionnaire():
     canvas.pack(
         fill=tk.BOTH, expand=True
     )  # configure canvas to occupy the whole main window
+    """# Frame
+    frame1 = ttk.Frame(root, padding=10)"""
+    # Style - Theme
+    ttk.Style().configure("TLabel", font=(None,32), foreground="#FF0000", background="#00FF00")
+    """# Label Frame
+    label_frame = ttk.Labelframe(
+        frame1,
+        text='Options',
+        padding=(10),
+        style='My.TLabelframe')"""
 
     # Radiobutton 1
-    v1 = tk.StringVar()
-    rb1 = tk.Radiobutton(
+    v1 = StringVar()
+    # Radiobutton 1
+    v1 = StringVar()
+    rb1 = ttk.Radiobutton(
         canvas,
-        text='Option A',
-        value='A',
+        text="1.集中していた",
+        value='1',
+        #background="White",
+        #font=("", 20),
+        #command=lambda: radio_click(canvas),
         variable=v1)
 
     # Radiobutton 2
-    rb2 = tk.Radiobutton(
+    rb2 = ttk.Radiobutton(
         canvas,
-        text='Option B',
-        value='B',
+        text='2.少し集中していた',
+        value='2',
+        #font=("", 20),
+        #command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb3 = ttk.Radiobutton(
+        canvas,
+        text='3.どちらでもない',
+        value='3',
+        #font=("", 20),
+        #command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb4 = ttk.Radiobutton(
+        canvas,
+        text='4.少し集中できなかった',
+        value='4',
+        #font=("", 20),
+        #command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb5 = ttk.Radiobutton(
+        canvas,
+        text='5.全く集中できなかった',
+        value='5',
+        #font=("", 20),
+        #command=lambda: radio_click(canvas),
+        variable=v1)
+
+
+    # Button
+    button1 = ttk.Button(
+        canvas,
+        text='OK',
+        padding=(20, 5),
+        command=lambda : print("v1=%s" % v1.get()))
+
+    # Layout
+    #frame1.grid()
+    #label_frame.grid(row=0, column=0)
+    """rb1.grid(row=0, column=0) # LabelFrame
+    rb2.grid(row=0, column=1) # LabelFrame
+    button1.grid(row=1, pady=5)"""
+    rb1.pack(anchor="center")#, expand=1,pady=10)
+    rb2.pack(anchor="center")#, expand=1,pady=10)
+    rb3.pack(anchor="center")#, expand=1)
+    rb4.pack(anchor="center")#, expand=1)
+    rb5.pack(anchor="center")#, expand=1)
+    button1.pack(anchor="center")#, expand=1)
+"""    canvas = tk.Canvas(root, highlightthickness=0)
+    canvas.pack(
+        fill=tk.BOTH, expand=True
+    )  # configure canvas to occupy the whole main window
+
+    # Style - Theme
+    ttk.Style().theme_use('classic')
+
+    # Radiobutton 1
+    v1 = StringVar()
+    rb1 = ttk.Radiobutton(
+        canvas,
+        text="1.集中していた",
+        value='1',
+        #font=("", 20),
+        command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb2 = ttk.Radiobutton(
+        canvas,
+        text='2.少し集中していた',
+        value='2',
+        #font=("", 20),
+        command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb3 = ttk.Radiobutton(
+        canvas,
+        text='3.どちらでもない',
+        value='3',
+        #font=("", 20),
+        command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb4 = ttk.Radiobutton(
+        canvas,
+        text='4.少し集中できなかった',
+        value='4',
+        #font=("", 20),
+        command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb5 = ttk.Radiobutton(
+        canvas,
+        text='5.全く集中できなかった',
+        value='5',
+        #font=("", 20),
+        command=lambda: radio_click(canvas),
         variable=v1)
 
     # Button
-    button1 = tk.Button(
-    canvas, text="進む", font=("", 40), bg="grey", command=lambda: movie(canvas)
+    button1 = ttk.Button(
+    canvas, text="決定", command=lambda: movie(canvas)
     )
 
-    rb1.pack()
-    rb2.pack()
-    button1.pack()
+    rb1.pack(anchor="center")#, expand=1,pady=10)
+    rb2.pack(anchor="center")#, expand=1,pady=10)
+    rb3.pack(anchor="center")#, expand=1)
+    rb4.pack(anchor="center")#, expand=1)
+    rb5.pack(anchor="center")#, expand=1)
+    button1.pack(anchor="center")#, expand=1)"""
 
+def radio_click(canvas):
+    # ラジオボタンの値を取得
+    value = tk.radio_value.get()
+    print(f"ラジオボタンの値は {value} です")
 
 
 ####視線課題####
@@ -705,7 +828,7 @@ class Log:
 
 
 if __name__ == "__main__":
-    #dt_now = datetime.datetime.now()
+    """#dt_now = datetime.datetime.now()
     dt_before = datetime.datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
     #dt_before = datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
     print("カメラを起動した時刻"+str(dt_before))
@@ -740,7 +863,7 @@ if __name__ == "__main__":
     f.write("カメラを起動した時刻,"+str(dt_before)+"\nカメラを起動後の時刻,"+str(dt_after)+"\n解像度,"+str(w)+"×"+str(h)+"\n動画FPS,"+str(fps)+"\n")
     f.write("フレーム数,FPS\n")
     thread = threading.Thread(name="thread", target=record, args=[cap, out, f], daemon=True)
-    thread.start()
+    thread.start()"""
 
     root = tk.Tk()
     # root.geometry("1280x720")
