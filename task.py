@@ -14,8 +14,10 @@ import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 import cv2
 
+
 global interval
 interval = 3
+
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
 print("画面サイズの高さ：", scr_h)
@@ -79,8 +81,9 @@ def close():
     cv2.destroyAllWindows()"""
 
 
+
 def QUESTION():
-    one = random.randint(50, 200)
+    one = random.randint(50, 99)
     two = random.randint(1, 49)
     hugo_index = random.randint(0, 2)
 
@@ -144,8 +147,8 @@ def timecount(canvas, video, audio):
 
         # print(interval)
         if second == interval:
-            video.stop()
-            audio.stop()
+            #video.stop()
+            #audio.stop()
             canvas.destroy()
             change()
             flg = False
@@ -153,12 +156,14 @@ def timecount(canvas, video, audio):
             return 0
 
 
+
 def movie(canvas1):
     canvas1.destroy()
+
     canvas = tk.Canvas(root, highlightthickness=0)
     canvas.pack(
         fill=tk.BOTH, expand=True
-    )  # configure canvas to occupy the whole main window
+    )
     label = tk.Label(canvas, text="2分間休憩時間です", font=("", 40))
     label.pack(anchor="center", expand=1)
 
@@ -171,15 +176,15 @@ def movie(canvas1):
         judge="-",
     )
 
-
     # sleep 前のエポック秒(UNIX時間)を取得
-    startSec = time.time()
-
+    #startSec = time.time()
 
     canvas.frame = tk.Label(canvas)
     canvas.frame.pack(side=tk.BOTTOM)
+
     video.openfile("./relax.mp4", canvas.frame)
     audio.openfile("./relax.wav")
+
     Q=[label,canvas]
     root.after(
         5000,
@@ -191,6 +196,7 @@ def image_de(Q):
     label=Q[0]
     canvas=Q[1]
     label.pack_forget()
+
     # 経過時間スレッドの開始
     thread = threading.Thread(
         name="thread", target=timecount, args=[canvas, video, audio], daemon=True
@@ -205,6 +211,10 @@ def image_de(Q):
         correct="-",
         judge="-",
     )
+    #audio.play()
+    #video.play()
+    #label.pack_forget()
+
 
     audio.play()
     video.play()
@@ -832,7 +842,7 @@ if __name__ == "__main__":
     dt_before = datetime.datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
     #dt_before = datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
     print("カメラを起動した時刻"+str(dt_before))
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
 
     fps = 30
     w = 1280
