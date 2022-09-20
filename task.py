@@ -1,8 +1,8 @@
-import sys
+from tkinter import *
+from tkinter import ttk
 import tkinter as tk
 import time
 import threading
-import random
 import datetime
 import pandas as pd
 import video
@@ -13,10 +13,11 @@ import pyautogui as pag
 import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 import cv2
-from PIL import Image, ImageTk # ← 追加
+
 
 global interval
-interval = 10
+interval = 3
+
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
 print("画面サイズの高さ：", scr_h)
@@ -28,20 +29,21 @@ task_count=7
 
 def click_close():
     if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
-        cap.release()
+        """cap.release()
         out.release()
         cv2.destroyAllWindows()
-        root.destroy()
+        root.destroy()"""
+        close()
         return 0
 
 def close():
-    cap.release()
+    """cap.release()
     out.release()
-    cv2.destroyAllWindows()
+    cv2.destroyAllWindows()"""
     root.destroy()
 
 
-def record(cap, out, f):
+"""def record(cap, out, f):
     tm=cv2.TickMeter()
     tm.start()
     count = 0
@@ -76,8 +78,7 @@ def record(cap, out, f):
     f.close()
     cap.release()
     out.release()
-    cv2.destroyAllWindows()
-
+    cv2.destroyAllWindows()"""
 
 
 
@@ -155,7 +156,9 @@ def timecount(canvas, video, audio):
             return 0
 
 
-def movie():
+
+def movie(canvas1):
+    canvas1.destroy()
 
     canvas = tk.Canvas(root, highlightthickness=0)
     canvas.pack(
@@ -178,9 +181,9 @@ def movie():
 
     canvas.frame = tk.Label(canvas)
     canvas.frame.pack(side=tk.BOTTOM)
-    image = Image.open("relax.png")
-    global photo
-    photo = ImageTk.PhotoImage(image)
+
+    video.openfile("./relax.mp4", canvas.frame)
+    audio.openfile("./relax.wav")
 
     Q=[label,canvas]
     root.after(
@@ -193,11 +196,7 @@ def image_de(Q):
     label=Q[0]
     canvas=Q[1]
     label.pack_forget()
-    canvas.create_image(scr_w / 2,       # 画像表示位置(Canvasの中心)
-                        scr_h / 2,
-                        image=photo)
-    #video.openfile("./relax.mp4", canvas.frame)
-    #audio.openfile("./relax.wav")
+
     # 経過時間スレッドの開始
     thread = threading.Thread(
         name="thread", target=timecount, args=[canvas, video, audio], daemon=True
@@ -215,6 +214,11 @@ def image_de(Q):
     #audio.play()
     #video.play()
     #label.pack_forget()
+
+
+    audio.play()
+    video.play()
+
 
 
 def end(canvas):
@@ -253,11 +257,165 @@ def task_select():
     else:
         Application(master=canvas1)
     # print(App)
+####アンケート評価####
+def questionnaire():
+    canvas = tk.Canvas(root, highlightthickness=0)
+    canvas.pack(
+        fill=tk.BOTH, expand=True
+    )  # configure canvas to occupy the whole main window
+    """# Frame
+    frame1 = ttk.Frame(root, padding=10)"""
+    # Style - Theme
+    ttk.Style().configure("TLabel", font=(None,32), foreground="#FF0000", background="#00FF00")
+    """# Label Frame
+    label_frame = ttk.Labelframe(
+        frame1,
+        text='Options',
+        padding=(10),
+        style='My.TLabelframe')"""
+
+    # Radiobutton 1
+    v1 = StringVar()
+    # Radiobutton 1
+    v1 = StringVar()
+    rb1 = ttk.Radiobutton(
+        canvas,
+        text="1.集中していた",
+        value='1',
+        #background="White",
+        #font=("", 20),
+        #command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb2 = ttk.Radiobutton(
+        canvas,
+        text='2.少し集中していた',
+        value='2',
+        #font=("", 20),
+        #command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb3 = ttk.Radiobutton(
+        canvas,
+        text='3.どちらでもない',
+        value='3',
+        #font=("", 20),
+        #command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb4 = ttk.Radiobutton(
+        canvas,
+        text='4.少し集中できなかった',
+        value='4',
+        #font=("", 20),
+        #command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb5 = ttk.Radiobutton(
+        canvas,
+        text='5.全く集中できなかった',
+        value='5',
+        #font=("", 20),
+        #command=lambda: radio_click(canvas),
+        variable=v1)
+
+
+    # Button
+    button1 = ttk.Button(
+        canvas,
+        text='OK',
+        padding=(20, 5),
+        command=lambda : print("v1=%s" % v1.get()))
+
+    # Layout
+    #frame1.grid()
+    #label_frame.grid(row=0, column=0)
+    """rb1.grid(row=0, column=0) # LabelFrame
+    rb2.grid(row=0, column=1) # LabelFrame
+    button1.grid(row=1, pady=5)"""
+    rb1.pack(anchor="center")#, expand=1,pady=10)
+    rb2.pack(anchor="center")#, expand=1,pady=10)
+    rb3.pack(anchor="center")#, expand=1)
+    rb4.pack(anchor="center")#, expand=1)
+    rb5.pack(anchor="center")#, expand=1)
+    button1.pack(anchor="center")#, expand=1)
+"""    canvas = tk.Canvas(root, highlightthickness=0)
+    canvas.pack(
+        fill=tk.BOTH, expand=True
+    )  # configure canvas to occupy the whole main window
+
+    # Style - Theme
+    ttk.Style().theme_use('classic')
+
+    # Radiobutton 1
+    v1 = StringVar()
+    rb1 = ttk.Radiobutton(
+        canvas,
+        text="1.集中していた",
+        value='1',
+        #font=("", 20),
+        command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb2 = ttk.Radiobutton(
+        canvas,
+        text='2.少し集中していた',
+        value='2',
+        #font=("", 20),
+        command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb3 = ttk.Radiobutton(
+        canvas,
+        text='3.どちらでもない',
+        value='3',
+        #font=("", 20),
+        command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb4 = ttk.Radiobutton(
+        canvas,
+        text='4.少し集中できなかった',
+        value='4',
+        #font=("", 20),
+        command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Radiobutton 2
+    rb5 = ttk.Radiobutton(
+        canvas,
+        text='5.全く集中できなかった',
+        value='5',
+        #font=("", 20),
+        command=lambda: radio_click(canvas),
+        variable=v1)
+
+    # Button
+    button1 = ttk.Button(
+    canvas, text="決定", command=lambda: movie(canvas)
+    )
+
+    rb1.pack(anchor="center")#, expand=1,pady=10)
+    rb2.pack(anchor="center")#, expand=1,pady=10)
+    rb3.pack(anchor="center")#, expand=1)
+    rb4.pack(anchor="center")#, expand=1)
+    rb5.pack(anchor="center")#, expand=1)
+    button1.pack(anchor="center")#, expand=1)"""
+
+def radio_click(canvas):
+    # ラジオボタンの値を取得
+    value = tk.radio_value.get()
+    print(f"ラジオボタンの値は {value} です")
 
 
 ####視線課題####
-
-
 class eye_task(tk.Frame):
     def __init__(self, master):
 
@@ -321,7 +479,7 @@ class eye_task(tk.Frame):
     def random_symbol(self):  # 問題作成
         self.text = [["〇", "red"]]
         self.label = ["〇", "△", "□", "×"]
-        self.color = ["red", "green", "blue", "yellow"]
+        self.color = ["red"]#, "green", "blue", "yellow"]
 
         for i in range(3):
             self.a = random.choice(self.label)
@@ -366,7 +524,7 @@ class eye_task(tk.Frame):
                 count += 1
                 self.flg = False
                 print("----------------------")
-                movie()
+                questionnaire()
 
                 return 0
 
@@ -605,7 +763,7 @@ class Application(tk.Frame):
 
                 global count
                 count += 1
-                movie()
+                questionnaire()
                 return 0
 
 
@@ -680,7 +838,7 @@ class Log:
 
 
 if __name__ == "__main__":
-    #dt_now = datetime.datetime.now()
+    """#dt_now = datetime.datetime.now()
     dt_before = datetime.datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
     #dt_before = datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
     print("カメラを起動した時刻"+str(dt_before))
@@ -715,7 +873,7 @@ if __name__ == "__main__":
     f.write("カメラを起動した時刻,"+str(dt_before)+"\nカメラを起動後の時刻,"+str(dt_after)+"\n解像度,"+str(w)+"×"+str(h)+"\n動画FPS,"+str(fps)+"\n")
     f.write("フレーム数,FPS\n")
     thread = threading.Thread(name="thread", target=record, args=[cap, out, f], daemon=True)
-    thread.start()
+    thread.start()"""
 
     root = tk.Tk()
     # root.geometry("1280x720")
