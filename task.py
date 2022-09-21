@@ -14,9 +14,9 @@ import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 import cv2
 
-
 global interval
-interval = 20
+
+interval = 3
 
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
@@ -81,12 +81,12 @@ def close():
     cv2.destroyAllWindows()"""
 
 
-
 def QUESTION():
+
     one = random.randint(11, 30)
     two = random.randint(1, 10)
-    hugo_index = random.randint(0, 2)
 
+    hugo_index = random.randint(0, 2)
     random_radiobutton = random.randint(0, 3)
     hugo = ["×", "-", "+"]
     ans = [one * two, one - two, one + two]
@@ -96,7 +96,6 @@ def QUESTION():
     ans = ans[hugo_index]
     radio_button_list = [ans, ans * 10, ans - 10, ans * 5]
     random.shuffle(radio_button_list)  # 配列の中をシャッフル
-
     question = "{} {} {} = ".format(one, hugo, two)
 
     print("hugo", hugo)
@@ -147,23 +146,21 @@ def timecount(canvas, video, audio):
 
         # print(interval)
         if second == interval:
-            #video.stop()
-            #audio.stop()
+            video.stop()
+            audio.stop()
             canvas.destroy()
             change()
             flg = False
-
             return 0
 
 
-
-def movie(canvas1):
+def movie(canvas1,v1):
+    print("集中度:%s" % v1.get())
     canvas1.destroy()
-
     canvas = tk.Canvas(root, highlightthickness=0)
     canvas.pack(
         fill=tk.BOTH, expand=True
-    )
+    )  # configure canvas to occupy the whole main window
     label = tk.Label(canvas, text="2分間休憩時間です", font=("", 40))
     label.pack(anchor="center", expand=1)
 
@@ -177,17 +174,14 @@ def movie(canvas1):
     )
 
     # sleep 前のエポック秒(UNIX時間)を取得
-    #startSec = time.time()
-
+    startSec = time.time()
     canvas.frame = tk.Label(canvas)
     canvas.frame.pack(side=tk.BOTTOM)
-
     video.openfile("./relax.mp4", canvas.frame)
     audio.openfile("./relax.wav")
-
     Q=[label,canvas]
     root.after(
-        5000,
+        3000,
         image_de,
         Q
     )
@@ -196,7 +190,6 @@ def image_de(Q):
     label=Q[0]
     canvas=Q[1]
     label.pack_forget()
-
     # 経過時間スレッドの開始
     thread = threading.Thread(
         name="thread", target=timecount, args=[canvas, video, audio], daemon=True
@@ -211,14 +204,9 @@ def image_de(Q):
         correct="-",
         judge="-",
     )
-    #audio.play()
-    #video.play()
-    #label.pack_forget()
-
 
     audio.play()
     video.play()
-
 
 
 def end(canvas):
@@ -257,6 +245,7 @@ def task_select():
     else:
         Application(master=canvas1)
     # print(App)
+
 ####アンケート評価####
 def questionnaire():
     canvas = tk.Canvas(root, highlightthickness=0)
@@ -266,154 +255,76 @@ def questionnaire():
     """# Frame
     frame1 = ttk.Frame(root, padding=10)"""
     # Style - Theme
-    ttk.Style().configure("TLabel", font=(None,32), foreground="#FF0000", background="#00FF00")
-    """# Label Frame
-    label_frame = ttk.Labelframe(
-        frame1,
-        text='Options',
-        padding=(10),
-        style='My.TLabelframe')"""
+    ttk.Style().configure('MyWidget.TRadiobutton' ,font=(None,30))#, relief="flat",overrelief="raised")
+    ttk.Style().map('MyWidget.TRadiobutton',
+                    foreground=[ ('active', 'blue')],
+                    background=[ ('active', 'white')]
+                    )
+    #ttk.Style().theme_use("alt")
+    label = tk.Label(canvas, text="課題を通して自分の集中度を評価してください", font=("", 30))
+    #whi = tk.Label(canvas, text="", font=("", 30))
 
-    # Radiobutton 1
-    v1 = StringVar()
     # Radiobutton 1
     v1 = StringVar()
     rb1 = ttk.Radiobutton(
         canvas,
         text="1.集中していた",
         value='1',
-        #background="White",
-        #font=("", 20),
-        #command=lambda: radio_click(canvas),
-        variable=v1)
+        style='MyWidget.TRadiobutton',
+        variable=v1, command =lambda: change_state(button1))
 
     # Radiobutton 2
     rb2 = ttk.Radiobutton(
         canvas,
         text='2.少し集中していた',
         value='2',
-        #font=("", 20),
-        #command=lambda: radio_click(canvas),
-        variable=v1)
+        style='MyWidget.TRadiobutton',
+        variable=v1, command = lambda: change_state(button1))
 
     # Radiobutton 2
     rb3 = ttk.Radiobutton(
         canvas,
         text='3.どちらでもない',
         value='3',
-        #font=("", 20),
-        #command=lambda: radio_click(canvas),
-        variable=v1)
+        style='MyWidget.TRadiobutton',
+        variable=v1, command = lambda: change_state(button1))
 
     # Radiobutton 2
     rb4 = ttk.Radiobutton(
         canvas,
         text='4.少し集中できなかった',
         value='4',
-        #font=("", 20),
-        #command=lambda: radio_click(canvas),
-        variable=v1)
+        style='MyWidget.TRadiobutton',
+        variable=v1, command = lambda: change_state(button1))
 
     # Radiobutton 2
     rb5 = ttk.Radiobutton(
         canvas,
         text='5.全く集中できなかった',
         value='5',
-        #font=("", 20),
-        #command=lambda: radio_click(canvas),
-        variable=v1)
-
+        style='MyWidget.TRadiobutton',
+        variable=v1, command = lambda: change_state(button1))
 
     # Button
-    button1 = ttk.Button(
+    button1 = tk.Button(
         canvas,
         text='OK',
-        padding=(20, 5),
-        command=lambda : print("v1=%s" % v1.get()))
+        font=("", 30),
+        command=lambda: movie(canvas,v1),
+        state=tk.DISABLED,
+        bg="grey")
 
-    # Layout
-    #frame1.grid()
-    #label_frame.grid(row=0, column=0)
-    """rb1.grid(row=0, column=0) # LabelFrame
-    rb2.grid(row=0, column=1) # LabelFrame
-    button1.grid(row=1, pady=5)"""
-    rb1.pack(anchor="center")#, expand=1,pady=10)
-    rb2.pack(anchor="center")#, expand=1,pady=10)
-    rb3.pack(anchor="center")#, expand=1)
-    rb4.pack(anchor="center")#, expand=1)
-    rb5.pack(anchor="center")#, expand=1)
-    button1.pack(anchor="center")#, expand=1)
-"""    canvas = tk.Canvas(root, highlightthickness=0)
-    canvas.pack(
-        fill=tk.BOTH, expand=True
-    )  # configure canvas to occupy the whole main window
+    label.pack(anchor="center",expand=1)
+    rb1.pack(anchor="center",pady=20)
+    rb2.pack(anchor="center",pady=20)
+    rb3.pack(anchor="center",pady=20)
+    rb4.pack(anchor="center",pady=20)
+    rb5.pack(anchor="center",pady=20)
+    button1.pack(anchor="center", expand=1)
 
-    # Style - Theme
-    ttk.Style().theme_use('classic')
-
-    # Radiobutton 1
-    v1 = StringVar()
-    rb1 = ttk.Radiobutton(
-        canvas,
-        text="1.集中していた",
-        value='1',
-        #font=("", 20),
-        command=lambda: radio_click(canvas),
-        variable=v1)
-
-    # Radiobutton 2
-    rb2 = ttk.Radiobutton(
-        canvas,
-        text='2.少し集中していた',
-        value='2',
-        #font=("", 20),
-        command=lambda: radio_click(canvas),
-        variable=v1)
-
-    # Radiobutton 2
-    rb3 = ttk.Radiobutton(
-        canvas,
-        text='3.どちらでもない',
-        value='3',
-        #font=("", 20),
-        command=lambda: radio_click(canvas),
-        variable=v1)
-
-    # Radiobutton 2
-    rb4 = ttk.Radiobutton(
-        canvas,
-        text='4.少し集中できなかった',
-        value='4',
-        #font=("", 20),
-        command=lambda: radio_click(canvas),
-        variable=v1)
-
-    # Radiobutton 2
-    rb5 = ttk.Radiobutton(
-        canvas,
-        text='5.全く集中できなかった',
-        value='5',
-        #font=("", 20),
-        command=lambda: radio_click(canvas),
-        variable=v1)
-
-    # Button
-    button1 = ttk.Button(
-    canvas, text="決定", command=lambda: movie(canvas)
-    )
-
-    rb1.pack(anchor="center")#, expand=1,pady=10)
-    rb2.pack(anchor="center")#, expand=1,pady=10)
-    rb3.pack(anchor="center")#, expand=1)
-    rb4.pack(anchor="center")#, expand=1)
-    rb5.pack(anchor="center")#, expand=1)
-    button1.pack(anchor="center")#, expand=1)"""
-
-def radio_click(canvas):
-    # ラジオボタンの値を取得
-    value = tk.radio_value.get()
-    print(f"ラジオボタンの値は {value} です")
-
+def change_state(button1):
+    if button1["state"] == tk.DISABLED:
+        button1["state"] = tk.NORMAL
 
 ####視線課題####
 class eye_task(tk.Frame):
@@ -782,16 +693,13 @@ class Application(tk.Frame):
                 questionnaire()
                 return 0
 
-
 # log
-
-
 class Log:
     def first_log(self, first_time):
         self.first_time = first_time
 
     def logging(
-        self, situation: str, action: str, user_input: str, correct: str, judge: str
+            self, situation: str, action: str, user_input: str, correct: str, judge: str
     ):
         self.situation = situation
         self.action = action
@@ -858,7 +766,7 @@ if __name__ == "__main__":
     dt_before = datetime.datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
     #dt_before = datetime.now().strftime('%Y_%b_%d_%H.%M.%S.%f')[:-3]
     print("カメラを起動した時刻"+str(dt_before))
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
 
     fps = 30
     w = 1280
