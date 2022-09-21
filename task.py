@@ -12,7 +12,7 @@ from tkinter import messagebox
 import pyautogui as pag
 import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
-import cv2
+
 
 global interval
 
@@ -114,7 +114,7 @@ def change():
     # 各種ウィジェットの作成
     label1_frame_app = tk.Label(canvas2, text="準備ができたら課題に進んでください", font=("", 40))
     button_change_frame_app = tk.Button(
-        canvas2, text="進む", font=("", 40), bg="grey", command=lambda: task_select()
+        canvas2, text="進む", font=("", 40), bg="grey", command=lambda: task_select(),relief="solid"
     )
     # logに書き込み
     log.logging(
@@ -123,6 +123,9 @@ def change():
         user_input="-",
         correct="-",
         judge="-",
+        evaluation="-",
+        eye_ans="-",
+        eye_correct="-"
     )
     # 各種ウィジェットの設置
     label1_frame_app.pack(anchor="center", expand=1)
@@ -146,6 +149,18 @@ def timecount(canvas, video, audio):
 
         # print(interval)
         if second == interval:
+            # logに書き込み
+            log.logging(
+                situation="リラックスモード終了",
+                action="-",
+                user_input="-",
+                correct="-",
+                judge="-",
+                evaluation="-",
+                eye_ans="-",
+                eye_correct="-"
+            )
+
             video.stop()
             audio.stop()
             canvas.destroy()
@@ -156,6 +171,20 @@ def timecount(canvas, video, audio):
 
 def movie(canvas1,v1):
     print("集中度:%s" % v1.get())
+
+    # logに書き込み
+    log.logging(
+        situation="集中度の自己評価",
+        action="okボタン押した",
+        user_input="-",
+        correct="-",
+        judge="-",
+        evaluation=str(v1.get()),
+        eye_ans="-",
+        eye_correct="-"
+    )
+
+
     canvas1.destroy()
     canvas = tk.Canvas(root, highlightthickness=0)
     canvas.pack(
@@ -166,11 +195,14 @@ def movie(canvas1,v1):
 
     # logに書き込み
     log.logging(
-        situation="リラックスモードモードに移行",
+        situation="リラックスモードに移行(2分休憩スライド)",
         action="-",
         user_input="-",
         correct="-",
         judge="-",
+        evaluation="-",
+        eye_ans="-",
+        eye_correct="-"
     )
 
     # sleep 前のエポック秒(UNIX時間)を取得
@@ -198,11 +230,14 @@ def image_de(Q):
 
     # logに書き込み
     log.logging(
-        situation="リラックスモードモード",
+        situation="リラックスモード",
         action="-",
         user_input="-",
         correct="-",
         judge="-",
+        evaluation="-",
+        eye_ans="-",
+        eye_correct="-"
     )
 
     audio.play()
@@ -232,10 +267,13 @@ def task_select():
     # logに書き込み
     log.logging(
         situation="準備ができたら課題に進んでください",
-        action="-",
-        user_input="進むボタンを押した",
+        action="進むボタンを押した",
+        user_input="-",
         correct="-",
         judge="-",
+        evaluation="-",
+        eye_ans="-",
+        eye_correct="-"
     )
 
     if count == task_count:
@@ -311,7 +349,7 @@ def questionnaire():
         text='OK',
         font=("", 30),
         command=lambda: movie(canvas,v1),
-        state=tk.DISABLED,
+        state=tk.DISABLED,relief="solid",
         bg="grey")
 
     label.pack(anchor="center",expand=1)
@@ -321,6 +359,19 @@ def questionnaire():
     rb4.pack(anchor="center",pady=20)
     rb5.pack(anchor="center",pady=20)
     button1.pack(anchor="center", expand=1)
+
+    # logに書き込み
+    log.logging(
+        situation="集中度の自己評価アンケートの表示",
+        action="-",
+        user_input="-",
+        correct="-",
+        judge="-",
+        evaluation="-",
+        eye_ans="-",
+        eye_correct="-"
+    )
+
 
 def change_state(button1):
     if button1["state"] == tk.DISABLED:
@@ -338,7 +389,7 @@ class eye_task(tk.Frame):
         self.label1_frame_app = tk.Label(self.master, text="〇", font=("", 100),fg="red")
         self.label2_frame_app = tk.Label(self.master, text="を選択・クリックしてください", font=("", 40))
         self.button_change_frame_app = tk.Button(
-            self.master, text="課題に進む", font=("", 40), bg="grey", command=lambda: self.rocate()
+            self.master, text="課題に進む", font=("", 40), bg="grey", command=lambda: self.rocate(),relief="solid"
         )
         # 各種ウィジェットの設置
         self.label1_frame_app.pack(anchor="center", expand=1)
@@ -403,6 +454,17 @@ class eye_task(tk.Frame):
         return self.text
 
     def button_func(self, event):
+        # logに書き込み
+        log.logging(
+            situation="集中",
+            action="userがボタン入力",
+            user_input="-",
+            correct="-",
+            judge="-",
+            evaluation="-",
+            eye_ans=str(event.widget.cget("text")),
+            eye_correct="〇"
+        )
         # event.widget.config(fg="red")
         print("形:" + event.widget.cget("text") + "　色:" + event.widget.cget("fg"))
         for i in range(4):
@@ -461,6 +523,18 @@ class eye_task(tk.Frame):
 
 class Application(tk.Frame):
     def __init__(self, master):
+        # logに書き込み
+        log.logging(
+            situation="計算課題の開始",
+            action="-",
+            user_input="-",
+            correct="-",
+            judge="-",
+            evaluation="-",
+            eye_ans="-",
+            eye_correct="-"
+        )
+
         super().__init__(master)
         self.pack()
 
@@ -478,7 +552,7 @@ class Application(tk.Frame):
         self.label1_frame_app = tk.Label(self.master, text="2桁の ＋,－,× を行います", font=("", 40))#,fg="red")
         self.label2_frame_app = tk.Label(self.master, text="4択のうち正しい答えを選択し決定してください", font=("", 40))
         self.button_change_frame_app = tk.Button(
-            self.master, text="課題に進む", font=("", 40), bg="grey", command=lambda: self.rocate()
+            self.master, text="課題に進む", font=("", 40), bg="grey", command=lambda: self.rocate(),relief="solid"
         )
         # 各種ウィジェットの設置
         self.label1_frame_app.pack(anchor="center", expand=1)
@@ -577,6 +651,7 @@ class Application(tk.Frame):
             self.master,
             text="OK",  # ボタンの表示名
             command=self.button_click,  # クリックされたときに呼ばれるメソッド
+            relief="solid",
         )
 
         # ボタンクリックに対してキーイベント処理を実装
@@ -627,6 +702,9 @@ class Application(tk.Frame):
                 user_input=str(self.ans_label2),
                 correct=str(self.ans),
                 judge="正解",
+                evaluation="-",
+                eye_ans="-",
+                eye_correct="-"
             )
 
             self.result_label.configure(text="正解！", fg="red")
@@ -639,6 +717,9 @@ class Application(tk.Frame):
                 user_input=str(self.ans_label2),
                 correct=str(self.ans),
                 judge="不正解",
+                evaluation="-",
+                eye_ans="-",
+                eye_correct="-"
             )
 
             self.result_label.configure(text="残念！", fg="blue")
@@ -672,6 +753,17 @@ class Application(tk.Frame):
 
             # 2分経ったら
             if self.second == interval:
+                # logに書き込み
+                log.logging(
+                    situation="計算課題の終了",
+                    action="-",
+                    user_input="-",
+                    correct="-",
+                    judge="-",
+                    evaluation="-",
+                    eye_ans="-",
+                    eye_correct="-"
+                )
 
                 self.q_label2.configure(text="")
                 messagebox.showinfo(
@@ -699,19 +791,23 @@ class Log:
         self.first_time = first_time
 
     def logging(
-            self, situation: str, action: str, user_input: str, correct: str, judge: str
+            self, situation: str, action: str, user_input: str, correct: str, judge: str, evaluation: str, eye_ans: str, eye_correct: str
     ):
         self.situation = situation
         self.action = action
         self.user_input = user_input
         self.correct = correct
         self.judge = judge
+        self.evaluation = evaluation
+        self.eye_ans = eye_ans
+        self.eye_correct = eye_correct
 
         filepath = f".\\log_dir\\{self.first_time}.csv"
-        columns = ["時間", "状態", "アクション", "ユーザーの入力", "正解値", "正誤判定"]
+        columns = ["時間", "状態", "アクション", "ユーザーの入力", "正解値", "正誤判定","集中度自己評価","ユーザーの答え","正解"]
 
         dt_now = datetime.datetime.now()
-        time = dt_now.strftime("%Y-%m-%d-%H-%M-%S")
+        time = dt_now.strftime('%Y_%m_%d_%H.%M.%S.%f')[:-3]
+        print(time)
         # self.log_data = {
         #     "time": [],
         #     "situation": [],
@@ -727,6 +823,9 @@ class Log:
             "ユーザーの入力": [],
             "正解値": [],
             "正誤判定": [],
+            "集中度自己評価": [],
+            "ユーザーの答え": [],
+            "正解": [],
         }
         # self.log_data["time"].append(time)
         # self.log_data["situation"].append(self.situation)
@@ -741,6 +840,9 @@ class Log:
         self.log_data["ユーザーの入力"].append(self.user_input)
         self.log_data["正解値"].append(self.correct)
         self.log_data["正誤判定"].append(self.judge)
+        self.log_data["集中度自己評価"].append(self.evaluation)
+        self.log_data["ユーザーの答え"].append(self.eye_ans)
+        self.log_data["正解"].append(self.eye_correct)
 
         if os.path.isfile(filepath):
             df1 = pd.read_csv(filepath, encoding="shift_jis")
@@ -808,12 +910,13 @@ if __name__ == "__main__":
     root.title("タイピングゲーム！")
 
     dt_now = datetime.datetime.now()
-    now = dt_now.strftime("%Y-%m-%d-%H-%M-%S")
+    now = dt_now.strftime('%Y_%m_%d_%H.%M.%S.%f')[:-3]
     global log
     log = Log()
     log.first_log(now)
     # logに書き込み
-    log.logging(situation="課題スタート", action="-", user_input="-", correct="-", judge="-")
+    log.logging(situation="課題スタート", action="-", user_input="-", correct="-", judge="-", evaluation="-", eye_ans="-", eye_correct="-")
+    #print("A:"+datetime.datetime.now().strftime('%Y_%m_%d_%H.%M.%S.%f')[:-3])
 
     # log.log_to_csv()
 
