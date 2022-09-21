@@ -15,7 +15,9 @@ os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 import cv2
 
 global interval
+
 interval = 3
+
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
 print("画面サイズの高さ：", scr_h)
@@ -80,8 +82,10 @@ def close():
 
 
 def QUESTION():
-    one = random.randint(50, 200)
-    two = random.randint(1, 49)
+
+    one = random.randint(11, 30)
+    two = random.randint(1, 10)
+
     hugo_index = random.randint(0, 2)
     random_radiobutton = random.randint(0, 3)
     hugo = ["×", "-", "+"]
@@ -522,7 +526,11 @@ class Application(tk.Frame):
             command=self.radio_click,  # クリックされたときに呼ばれるメソッド
             variable=self.radio_value,  # 選択の状態を設定する
             value=str(radio_button_list[0]),  # ラジオボタンに割り付ける値の設定
+            indicator=0,
+            background="light blue",
             font=("", 20),
+            width=20,
+            height=3,
         )
 
         self.radio1 = tk.Radiobutton(
@@ -531,7 +539,11 @@ class Application(tk.Frame):
             command=self.radio_click,  # クリックされたときに呼ばれるメソッド
             variable=self.radio_value,  # 選択の状態を設定する
             value=str(radio_button_list[1]),  # ラジオボタンに割り付ける値の設定
+            indicator=0,
+            background="light blue",
             font=("", 20),
+            width=20,
+            height=3,
         )
 
         self.radio2 = tk.Radiobutton(
@@ -540,7 +552,11 @@ class Application(tk.Frame):
             command=self.radio_click,  # クリックされたときに呼ばれるメソッド
             variable=self.radio_value,  # 選択の状態を設定する
             value=str(radio_button_list[2]),  # ラジオボタンに割り付ける値の設定
+            indicator=0,
+            background="light blue",
             font=("", 20),
+            width=20,
+            height=3,
         )
 
         self.radio3 = tk.Radiobutton(
@@ -549,7 +565,11 @@ class Application(tk.Frame):
             command=self.radio_click,  # クリックされたときに呼ばれるメソッド
             variable=self.radio_value,  # 選択の状態を設定する
             value=str(radio_button_list[3]),  # ラジオボタンに割り付ける値の設定
+            indicator=0,
+            background="light blue",
             font=("", 20),
+            width=20,
+            height=3,
         )
 
         # ボタンの作成
