@@ -177,7 +177,7 @@ def movie(canvas1,v1):
     audio.openfile("./relax.wav")
     Q=[label,canvas]
     root.after(
-        5000,
+        3000,
         image_de,
         Q
     )
