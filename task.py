@@ -16,7 +16,7 @@ import cv2
 
 global interval
 
-interval = 3
+interval = 30
 
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
@@ -310,7 +310,7 @@ def questionnaire():
         canvas,
         text='OK',
         font=("", 30),
-        command=lambda: movie(canvas,v1),
+        command=lambda: movie(canvas, v1),
         state=tk.DISABLED,
         bg="grey")
 
@@ -577,6 +577,10 @@ class Application(tk.Frame):
             self.master,
             text="OK",  # ボタンの表示名
             command=self.button_click,  # クリックされたときに呼ばれるメソッド
+            state=tk.DISABLED,
+            width=20,
+            height=3,
+            bg="grey"
         )
 
         # ボタンクリックに対してキーイベント処理を実装
@@ -587,7 +591,7 @@ class Application(tk.Frame):
         self.radio1.pack()
         self.radio2.pack()
         self.radio3.pack()
-        self.button.pack()
+        self.button.pack(expand=1)
 
         # # 時間計測用のラベル
         self.time_label = tk.Label(self, text="", font=("", 20))
@@ -601,6 +605,9 @@ class Application(tk.Frame):
         # ラジオボタンの値を取得
         value = self.radio_value.get()
         print(f"ラジオボタンの値は {value} です")
+        if self.button["state"] == tk.DISABLED:
+            self.button["state"] = tk.NORMAL
+            self.button["bg"] = "white"
 
         # "OK"のボタンを押したかどうか
         self.next = False
@@ -616,6 +623,11 @@ class Application(tk.Frame):
         global log
         value = self.radio_value.get()
         self.ans_label2 = value
+
+        if self.button["state"] == tk.NORMAL:
+            self.button["state"] = tk.DISABLED
+            self.button["bg"] = "grey"
+
         # 入力値の答え合わせ
         print("OKボタンを押しました")
         print(f"押した答え:{self.ans_label2},本当の答え：{self.ans}")
