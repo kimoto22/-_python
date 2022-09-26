@@ -16,7 +16,7 @@ os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 
 global interval
 
-interval = 3
+interval = 50
 
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
@@ -228,9 +228,12 @@ def image_de(Q):
     )
     thread.start()
 
+    audio.play()
+    video.play()
+
     # logに書き込み
     log.logging(
-        situation="リラックスモード",
+        situation="リラックスモード(動画開始)",
         action="-",
         user_input="-",
         correct="-",
@@ -239,10 +242,6 @@ def image_de(Q):
         eye_ans="-",
         eye_correct="-"
     )
-
-    audio.play()
-    video.play()
-
 
 def end(canvas):
     label = tk.Label(canvas, text="課題は終了です。", font=("", 40))
@@ -380,6 +379,17 @@ def change_state(button1):
 ####視線課題####
 class eye_task(tk.Frame):
     def __init__(self, master):
+        # logに書き込み
+        log.logging(
+            situation="視線課題の説明",
+            action="-",
+            user_input="-",
+            correct="-",
+            judge="-",
+            evaluation="-",
+            eye_ans="-",
+            eye_correct="-"
+        )
 
         super().__init__(master)
         # self.pack()
@@ -398,6 +408,17 @@ class eye_task(tk.Frame):
 
 
     def rocate(self):
+        # logに書き込み
+        log.logging(
+            situation="視線課題の説明",
+            action="進むボタンを押した",
+            user_input="-",
+            correct="-",
+            judge="-",
+            evaluation="-",
+            eye_ans="-",
+            eye_correct="-"
+        )
         self.label1_frame_app.pack_forget()
         self.label2_frame_app.pack_forget()
         self.button_change_frame_app.pack_forget()
@@ -407,6 +428,17 @@ class eye_task(tk.Frame):
 
         self.symbol = []
         self.button = []
+        # logに書き込み
+        log.logging(
+            situation="視線課題の開始",
+            action="進むボタンを押した",
+            user_input="-",
+            correct="-",
+            judge="-",
+            evaluation="-",
+            eye_ans="-",
+            eye_correct="-"
+        )
         for i in range(4):
             self.symbol.append(tk.StringVar())
             self.symbol[i].set(self.text[i][0])
@@ -490,6 +522,17 @@ class eye_task(tk.Frame):
 
             # 2分経ったら
             if self.second == interval:
+                # logに書き込み
+                log.logging(
+                    situation="視線課題の終了",
+                    action="-",
+                    user_input="-",
+                    correct="-",
+                    judge="-",
+                    evaluation="-",
+                    eye_ans="-",
+                    eye_correct="-"
+                )
                 self.second = 0
                 self.destroy()
                 self.master.destroy()
@@ -525,7 +568,7 @@ class Application(tk.Frame):
     def __init__(self, master):
         # logに書き込み
         log.logging(
-            situation="計算課題の開始",
+            situation="計算課題の説明",
             action="-",
             user_input="-",
             correct="-",
@@ -561,6 +604,17 @@ class Application(tk.Frame):
 
 
     def rocate(self):
+        # logに書き込み
+        log.logging(
+            situation="計算課題の説明",
+            action="進むボタンを押した",
+            user_input="-",
+            correct="-",
+            judge="-",
+            evaluation="-",
+            eye_ans="-",
+            eye_correct="-"
+        )
         self.label1_frame_app.pack_forget()
         self.label2_frame_app.pack_forget()
         self.button_change_frame_app.pack_forget()
@@ -575,6 +629,17 @@ class Application(tk.Frame):
 
     # ウィジェットの生成と配置
     def create_widgets(self):
+        # logに書き込み
+        log.logging(
+            situation="計算課題の開始",
+            action="-",
+            user_input="-",
+            correct="-",
+            judge="-",
+            evaluation="-",
+            eye_ans="-",
+            eye_correct="-"
+        )
         self.ans_label2 = tk.Label(self, text="", width=10, anchor="w", font=("", 40))
         self.ans_label2.grid(row=0, column=0)
         self.q_label = tk.Label(self, text="お題：", font=("", 40))
@@ -586,6 +651,8 @@ class Application(tk.Frame):
         self.q_label2.grid(row=1, column=1)
         self.ans_label = tk.Label(self, text="解答：", font=("", 40))
         self.ans_label.grid(row=2, column=0)
+        self.answer = tk.Label(self, text="", width=20, anchor="w", font=("", 40))
+        self.answer.grid(row=2, column=1)
 
         self.result_label = tk.Label(self, text="", font=("", 40))
         self.result_label.grid(row=3, column=0, columnspan=2)
@@ -652,6 +719,10 @@ class Application(tk.Frame):
             text="OK",  # ボタンの表示名
             command=self.button_click,  # クリックされたときに呼ばれるメソッド
             relief="solid",
+            state=tk.DISABLED,
+            width=20,
+            height=3,
+            bg="grey",
         )
 
         # ボタンクリックに対してキーイベント処理を実装
@@ -662,12 +733,12 @@ class Application(tk.Frame):
         self.radio1.pack()
         self.radio2.pack()
         self.radio3.pack()
-        self.button.pack()
+        self.button.pack(expand=1)
 
         # # 時間計測用のラベル
         self.time_label = tk.Label(self, text="", font=("", 20))
         self.time_label.grid(row=4, column=0, columnspan=2)
-        self.result_label = tk.Label(self, text="", font=("", 40))
+        self.result_label = tk.Label(self, text="", font=("", 20))
         self.result_label.grid(row=5, column=0, columnspan=2)
 
         self.flg2 = True
@@ -676,6 +747,10 @@ class Application(tk.Frame):
         # ラジオボタンの値を取得
         value = self.radio_value.get()
         print(f"ラジオボタンの値は {value} です")
+        self.answer.configure(text=value)
+        if self.button["state"] == tk.DISABLED:
+            self.button["state"] = tk.NORMAL
+            self.button["bg"] = "white"
 
         # "OK"のボタンを押したかどうか
         self.next = False
