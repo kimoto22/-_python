@@ -16,7 +16,7 @@ os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 
 global interval
 
-interval = 50
+interval = 30
 
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
@@ -766,6 +766,11 @@ class Application(tk.Frame):
         global log
         value = self.radio_value.get()
         self.ans_label2 = value
+
+        if self.button["state"] == tk.NORMAL:
+            self.button["state"] = tk.DISABLED
+            self.button["bg"] = "grey"
+
         # 入力値の答え合わせ
         print("OKボタンを押しました")
         print(f"押した答え:{self.ans_label2},本当の答え：{self.ans}")
