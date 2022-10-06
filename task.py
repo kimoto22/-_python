@@ -16,7 +16,7 @@ os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 
 global interval
 
-interval = 30
+interval = 3
 
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
@@ -125,7 +125,12 @@ def change():
         judge="-",
         evaluation="-",
         eye_ans="-",
-        eye_correct="-"
+        ans_position="-",
+        eye_correct="-",
+        choice_1="-",
+        choice_2="-",
+        choice_3="-",
+        choice_4="-",
     )
     # 各種ウィジェットの設置
     label1_frame_app.pack(anchor="center", expand=1)
@@ -158,7 +163,12 @@ def timecount(canvas, video, audio):
                 judge="-",
                 evaluation="-",
                 eye_ans="-",
-                eye_correct="-"
+                ans_position="-",
+                eye_correct="-",
+                choice_1="-",
+                choice_2="-",
+                choice_3="-",
+                choice_4="-",
             )
 
             video.stop()
@@ -181,7 +191,12 @@ def movie(canvas1,v1):
         judge="-",
         evaluation=str(v1.get()),
         eye_ans="-",
-        eye_correct="-"
+        ans_position="-",
+        eye_correct="-",
+        choice_1="-",
+        choice_2="-",
+        choice_3="-",
+        choice_4="-",
     )
 
 
@@ -202,7 +217,12 @@ def movie(canvas1,v1):
         judge="-",
         evaluation="-",
         eye_ans="-",
-        eye_correct="-"
+        ans_position="-",
+        eye_correct="-",
+        choice_1="-",
+        choice_2="-",
+        choice_3="-",
+        choice_4="-",
     )
 
     # sleep 前のエポック秒(UNIX時間)を取得
@@ -240,7 +260,12 @@ def image_de(Q):
         judge="-",
         evaluation="-",
         eye_ans="-",
-        eye_correct="-"
+        ans_position="-",
+        eye_correct="-",
+        choice_1="-",
+        choice_2="-",
+        choice_3="-",
+        choice_4="-",
     )
 
 def end(canvas):
@@ -272,7 +297,12 @@ def task_select():
         judge="-",
         evaluation="-",
         eye_ans="-",
-        eye_correct="-"
+        ans_position="-",
+        eye_correct="-",
+        choice_1="-",
+        choice_2="-",
+        choice_3="-",
+        choice_4="-",
     )
 
     if count == task_count:
@@ -281,6 +311,7 @@ def task_select():
         eye_task(master=canvas1)
     else:
         Application(master=canvas1)
+        #eye_task(master=canvas1)
     # print(App)
 
 ####アンケート評価####
@@ -368,7 +399,12 @@ def questionnaire():
         judge="-",
         evaluation="-",
         eye_ans="-",
-        eye_correct="-"
+        ans_position="-",
+        eye_correct="-",
+        choice_1="-",
+        choice_2="-",
+        choice_3="-",
+        choice_4="-",
     )
 
 
@@ -388,7 +424,12 @@ class eye_task(tk.Frame):
             judge="-",
             evaluation="-",
             eye_ans="-",
-            eye_correct="-"
+            ans_position="-",
+            eye_correct="-",
+            choice_1="-",
+            choice_2="-",
+            choice_3="-",
+            choice_4="-",
         )
 
         super().__init__(master)
@@ -417,7 +458,12 @@ class eye_task(tk.Frame):
             judge="-",
             evaluation="-",
             eye_ans="-",
-            eye_correct="-"
+            ans_position="-",
+            eye_correct="-",
+            choice_1="-",
+            choice_2="-",
+            choice_3="-",
+            choice_4="-",
         )
         self.label1_frame_app.pack_forget()
         self.label2_frame_app.pack_forget()
@@ -437,8 +483,14 @@ class eye_task(tk.Frame):
             judge="-",
             evaluation="-",
             eye_ans="-",
-            eye_correct="-"
+            ans_position="-",
+            eye_correct="-",
+            choice_1="-",
+            choice_2="-",
+            choice_3="-",
+            choice_4="-",
         )
+        #print(self.text)
         for i in range(4):
             self.symbol.append(tk.StringVar())
             self.symbol[i].set(self.text[i][0])
@@ -459,7 +511,7 @@ class eye_task(tk.Frame):
                 sticky="nsew",
             )
             # ボタンクリック時のイベント設定
-            self.button[i].bind("<ButtonPress>", self.button_func)
+            self.button[i].bind("<ButtonPress>",  (lambda e, num=i: self.button_func(e, num)))
 
         self.master.grid_columnconfigure(0, weight=1)
         self.master.grid_columnconfigure(1, weight=1)
@@ -483,9 +535,18 @@ class eye_task(tk.Frame):
                 self.b = random.choice(self.color)
             self.text.append([self.a, self.b])
         random.shuffle(self.text)
+        self.pos = self.text
         return self.text
 
-    def button_func(self, event):
+    def button_func(self, event,num):
+        if num == 0:
+            position = "第2象限"
+        elif num == 1:
+            position = "第3象限"
+        elif num == 2:
+            position = "第1象限"
+        elif num == 3:
+            position = "第4象限"
         # logに書き込み
         log.logging(
             situation="集中",
@@ -495,9 +556,16 @@ class eye_task(tk.Frame):
             judge="-",
             evaluation="-",
             eye_ans=str(event.widget.cget("text")),
-            eye_correct="〇"
+            ans_position=str(position),
+            eye_correct="〇",
+            choice_1=str(self.pos[2][0]),
+            choice_2=str(self.pos[0][0]),
+            choice_3=str(self.pos[1][0]),
+            choice_4=str(self.pos[3][0]),
+
         )
         # event.widget.config(fg="red")
+        print(position)
         print("形:" + event.widget.cget("text") + "　色:" + event.widget.cget("fg"))
         for i in range(4):
             self.button[i].grid_forget()
@@ -516,7 +584,7 @@ class eye_task(tk.Frame):
         self.flg = True
         # print(self.second)
         while self.flg:
-            print(self.second)
+            #print(self.second)
             self.second += 1
             time.sleep(1)
 
@@ -531,7 +599,12 @@ class eye_task(tk.Frame):
                     judge="-",
                     evaluation="-",
                     eye_ans="-",
-                    eye_correct="-"
+                    ans_position="-",
+                    eye_correct="-",
+                    choice_1="-",
+                    choice_2="-",
+                    choice_3="-",
+                    choice_4="-",
                 )
                 self.second = 0
                 self.destroy()
@@ -546,7 +619,7 @@ class eye_task(tk.Frame):
 
     def change_label_text(self):
         self.text = self.random_symbol()
-        print(self.flg)
+        #print(self.flg)
         if self.flg == True:
             self.master.delete("line")
             for i in range(4):
@@ -575,7 +648,12 @@ class Application(tk.Frame):
             judge="-",
             evaluation="-",
             eye_ans="-",
-            eye_correct="-"
+            ans_position="-",
+            eye_correct="-",
+            choice_1="-",
+            choice_2="-",
+            choice_3="-",
+            choice_4="-",
         )
 
         super().__init__(master)
@@ -613,7 +691,12 @@ class Application(tk.Frame):
             judge="-",
             evaluation="-",
             eye_ans="-",
-            eye_correct="-"
+            ans_position="-",
+            eye_correct="-",
+            choice_1="-",
+            choice_2="-",
+            choice_3="-",
+            choice_4="-",
         )
         self.label1_frame_app.pack_forget()
         self.label2_frame_app.pack_forget()
@@ -638,7 +721,12 @@ class Application(tk.Frame):
             judge="-",
             evaluation="-",
             eye_ans="-",
-            eye_correct="-"
+            ans_position="-",
+            eye_correct="-",
+            choice_1="-",
+            choice_2="-",
+            choice_3="-",
+            choice_4="-",
         )
         self.ans_label2 = tk.Label(self, text="", width=10, anchor="w", font=("", 40))
         self.ans_label2.grid(row=0, column=0)
@@ -784,7 +872,12 @@ class Application(tk.Frame):
                 judge="正解",
                 evaluation="-",
                 eye_ans="-",
-                eye_correct="-"
+                ans_position="-",
+                eye_correct="-",
+                choice_1="-",
+                choice_2="-",
+                choice_3="-",
+                choice_4="-",
             )
 
             self.result_label.configure(text="正解！", fg="red")
@@ -799,7 +892,12 @@ class Application(tk.Frame):
                 judge="不正解",
                 evaluation="-",
                 eye_ans="-",
-                eye_correct="-"
+                ans_position="-",
+                eye_correct="-",
+                choice_1="-",
+                choice_2="-",
+                choice_3="-",
+                choice_4="-",
             )
 
             self.result_label.configure(text="残念！", fg="blue")
@@ -842,8 +940,14 @@ class Application(tk.Frame):
                     judge="-",
                     evaluation="-",
                     eye_ans="-",
-                    eye_correct="-"
+                    ans_position="-",
+                    eye_correct="-",
+                    choice_1="-",
+                    choice_2="-",
+                    choice_3="-",
+                    choice_4="-",
                 )
+
 
                 self.q_label2.configure(text="")
                 messagebox.showinfo(
@@ -871,7 +975,8 @@ class Log:
         self.first_time = first_time
 
     def logging(
-            self, situation: str, action: str, user_input: str, correct: str, judge: str, evaluation: str, eye_ans: str, eye_correct: str
+            self, situation: str, action: str, user_input: str, correct: str, judge: str, evaluation: str, eye_ans: str, ans_position: str, eye_correct: str,
+            choice_1: str, choice_2: str, choice_3: str, choice_4: str,
     ):
         self.situation = situation
         self.action = action
@@ -880,10 +985,15 @@ class Log:
         self.judge = judge
         self.evaluation = evaluation
         self.eye_ans = eye_ans
+        self.ans_position = ans_position
         self.eye_correct = eye_correct
+        self.choice_1 = choice_1
+        self.choice_2 = choice_2
+        self.choice_3 = choice_3
+        self.choice_4 = choice_4
 
         filepath = f".\\log_dir\\{self.first_time}.csv"
-        columns = ["時間", "状態", "アクション", "ユーザーの入力", "正解値", "正誤判定","集中度自己評価","ユーザーの答え","正解"]
+        columns = ["時間", "状態", "アクション", "ユーザーの入力", "正解値", "正誤判定","集中度自己評価","ユーザーの答え","答えの位置","正解","第1象限","第2象限","第3象限","第4象限"]
 
         dt_now = datetime.datetime.now()
         time = dt_now.strftime('%Y_%m_%d_%H.%M.%S.%f')[:-3]
@@ -905,7 +1015,12 @@ class Log:
             "正誤判定": [],
             "集中度自己評価": [],
             "ユーザーの答え": [],
+            "答えの位置": [],
             "正解": [],
+            "第1象限": [],
+            "第2象限": [],
+            "第3象限": [],
+            "第4象限": [],
         }
         # self.log_data["time"].append(time)
         # self.log_data["situation"].append(self.situation)
@@ -922,7 +1037,12 @@ class Log:
         self.log_data["正誤判定"].append(self.judge)
         self.log_data["集中度自己評価"].append(self.evaluation)
         self.log_data["ユーザーの答え"].append(self.eye_ans)
+        self.log_data["答えの位置"].append(self.ans_position)
         self.log_data["正解"].append(self.eye_correct)
+        self.log_data["第1象限"].append(self.choice_1)
+        self.log_data["第2象限"].append(self.choice_2)
+        self.log_data["第3象限"].append(self.choice_3)
+        self.log_data["第4象限"].append(self.choice_4)
 
         if os.path.isfile(filepath):
             df1 = pd.read_csv(filepath, encoding="shift_jis")
@@ -995,7 +1115,8 @@ if __name__ == "__main__":
     log = Log()
     log.first_log(now)
     # logに書き込み
-    log.logging(situation="課題スタート", action="-", user_input="-", correct="-", judge="-", evaluation="-", eye_ans="-", eye_correct="-")
+    log.logging(situation="課題スタート", action="-", user_input="-", correct="-", judge="-", evaluation="-", eye_ans="-",ans_position="-", eye_correct="-",
+                choice_1="-", choice_2="-", choice_3="-", choice_4="-")
     #print("A:"+datetime.datetime.now().strftime('%Y_%m_%d_%H.%M.%S.%f')[:-3])
 
     # log.log_to_csv()
