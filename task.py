@@ -16,7 +16,7 @@ os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 
 global interval
 
-interval = 3
+interval = 30
 
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
@@ -84,7 +84,7 @@ def close():
 def QUESTION():
 
     one = random.randint(11, 30)
-    two = random.randint(1, 10)
+    two = random.randint(2, 10)
 
     hugo_index = random.randint(0, 2)
     random_radiobutton = random.randint(0, 3)
@@ -94,7 +94,7 @@ def QUESTION():
     # 問題をランダムに生成
     hugo = hugo[hugo_index]
     ans = ans[hugo_index]
-    radio_button_list = [ans, ans * 10, ans - 10, ans * 5]
+    radio_button_list = [ans, ans * 2+(one), ans - two, ans * two]
     random.shuffle(radio_button_list)  # 配列の中をシャッフル
     question = "{} {} {} = ".format(one, hugo, two)
 
@@ -311,7 +311,6 @@ def task_select():
         eye_task(master=canvas1)
     else:
         Application(master=canvas1)
-        #eye_task(master=canvas1)
     # print(App)
 
 ####アンケート評価####
@@ -584,7 +583,7 @@ class eye_task(tk.Frame):
         self.flg = True
         # print(self.second)
         while self.flg:
-            #print(self.second)
+            # print(self.second)
             self.second += 1
             time.sleep(1)
 
@@ -619,7 +618,7 @@ class eye_task(tk.Frame):
 
     def change_label_text(self):
         self.text = self.random_symbol()
-        #print(self.flg)
+        print(self.flg)
         if self.flg == True:
             self.master.delete("line")
             for i in range(4):
@@ -948,7 +947,6 @@ class Application(tk.Frame):
                     choice_4="-",
                 )
 
-
                 self.q_label2.configure(text="")
                 messagebox.showinfo(
                     "リザルト",
@@ -993,10 +991,10 @@ class Log:
         self.choice_4 = choice_4
 
         filepath = f".\\log_dir\\{self.first_time}.csv"
-        columns = ["時間", "状態", "アクション", "ユーザーの入力", "正解値", "正誤判定","集中度自己評価","ユーザーの答え","答えの位置","正解","第1象限","第2象限","第3象限","第4象限"]
+        columns = ["時間", "状態", "アクション", "計算課題の入力", "正解値", "正誤判定","集中度自己評価","視線課題の入力","答えの位置","正解","第1象限","第2象限","第3象限","第4象限"]
 
         dt_now = datetime.datetime.now()
-        time = dt_now.strftime('%Y_%m_%d_%H.%M.%S.%f')[:-3]
+        time = dt_now.strftime('%Y_%m_%d_%H.%M.%S')[:-3]
         print(time)
         # self.log_data = {
         #     "time": [],
@@ -1010,11 +1008,11 @@ class Log:
             "時間": [],
             "状態": [],
             "アクション": [],
-            "ユーザーの入力": [],
+            "計算課題の入力": [],
             "正解値": [],
             "正誤判定": [],
             "集中度自己評価": [],
-            "ユーザーの答え": [],
+            "視線課題の入力": [],
             "答えの位置": [],
             "正解": [],
             "第1象限": [],
@@ -1032,11 +1030,11 @@ class Log:
         self.log_data["時間"].append(time)
         self.log_data["状態"].append(self.situation)
         self.log_data["アクション"].append(self.action)
-        self.log_data["ユーザーの入力"].append(self.user_input)
+        self.log_data["計算課題の入力"].append(self.user_input)
         self.log_data["正解値"].append(self.correct)
         self.log_data["正誤判定"].append(self.judge)
         self.log_data["集中度自己評価"].append(self.evaluation)
-        self.log_data["ユーザーの答え"].append(self.eye_ans)
+        self.log_data["視線課題の入力"].append(self.eye_ans)
         self.log_data["答えの位置"].append(self.ans_position)
         self.log_data["正解"].append(self.eye_correct)
         self.log_data["第1象限"].append(self.choice_1)
@@ -1110,7 +1108,7 @@ if __name__ == "__main__":
     root.title("タイピングゲーム！")
 
     dt_now = datetime.datetime.now()
-    now = dt_now.strftime('%Y_%m_%d_%H.%M.%S.%f')[:-3]
+    now = dt_now.strftime('%Y_%m_%d_%H.%M.%S')[:-3]
     global log
     log = Log()
     log.first_log(now)
