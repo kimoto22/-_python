@@ -16,7 +16,7 @@ os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 
 global interval
 
-interval = 30
+interval = 120
 
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
@@ -83,8 +83,8 @@ def close():
 
 def QUESTION():
 
-    one = random.randint(11, 30)
-    two = random.randint(2, 10)
+    one = random.randint(51, 90)
+    two = random.randint(20, 50)
 
     hugo_index = random.randint(0, 2)
     random_radiobutton = random.randint(0, 3)
@@ -94,7 +94,7 @@ def QUESTION():
     # 問題をランダムに生成
     hugo = hugo[hugo_index]
     ans = ans[hugo_index]
-    radio_button_list = [ans, ans * 2+(one), ans - two, ans * two]
+    radio_button_list = [ans, ans - 10, ans + 10, ans + two]
     random.shuffle(radio_button_list)  # 配列の中をシャッフル
     question = "{} {} {} = ".format(one, hugo, two)
 
