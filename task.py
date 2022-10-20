@@ -994,7 +994,7 @@ class Log:
         columns = ["時間", "状態", "アクション", "計算課題の入力", "正解値", "正誤判定","集中度自己評価","視線課題の入力","答えの位置","正解","第1象限","第2象限","第3象限","第4象限"]
 
         dt_now = datetime.datetime.now()
-        time = dt_now.strftime('%Y_%m_%d_%H.%M.%S')[:-3]
+        time = dt_now.strftime('%Y_%m_%d_%H.%M.%S')
         print(time)
         # self.log_data = {
         #     "time": [],
