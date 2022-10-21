@@ -17,6 +17,7 @@ os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 global interval
 
 interval = 120
+relax_interval = 60
 
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
@@ -153,7 +154,7 @@ def timecount(canvas, video, audio):
         # time_label.configure(text=f"経過時間：{str(elapsed_minute).zfill(2)}:{str(elapsed_second).zfill(2)}")
 
         # print(interval)
-        if second == interval:
+        if second == relax_interval:
             # logに書き込み
             log.logging(
                 situation="リラックスモード終了",
