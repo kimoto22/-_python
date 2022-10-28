@@ -17,7 +17,7 @@ os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
 global interval
 
 interval = 120
-relax_interval = 60
+relax_interval = 120
 
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
