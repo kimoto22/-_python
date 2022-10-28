@@ -84,8 +84,8 @@ def close():
 
 def QUESTION():
 
-    one = random.randint(51, 90)
-    two = random.randint(20, 50)
+    one = random.randint(10, 90)
+    two = random.randint(10, 90)
 
     hugo = ["×"]
     ans = [one * two]
