@@ -87,14 +87,12 @@ def QUESTION():
     one = random.randint(51, 90)
     two = random.randint(20, 50)
 
-    hugo_index = random.randint(0, 2)
-    random_radiobutton = random.randint(0, 3)
-    hugo = ["×", "-", "+"]
-    ans = [one * two, one - two, one + two]
+    hugo = ["×"]
+    ans = [one * two]
 
     # 問題をランダムに生成
-    hugo = hugo[hugo_index]
-    ans = ans[hugo_index]
+    hugo = hugo[0]
+    ans = ans[0]
     radio_button_list = [ans, ans - 10, ans + 10, ans + two]
     random.shuffle(radio_button_list)  # 配列の中をシャッフル
     question = "{} {} {} = ".format(one, hugo, two)
