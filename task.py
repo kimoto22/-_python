@@ -26,7 +26,7 @@ print("画面サイズの高さ：", scr_h)
 video = video.Video()
 audio = audio.Audio()
 
-task_count=7
+task_count=5
 
 def click_close():
     if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
@@ -56,13 +56,254 @@ def QUESTION():
 
     return ans, question, radio_button_list
 
-def question_language():
+def question_language(i):
 
-    ans = "しゃべる"
-    question = "話す"
-    radio_button_list = ["笑う", "歌う", "なく", "しゃべる"]
+    if count == 1:
+        if i==0:
+            genre="似た意味の単語"
+            ans = "忍耐"
+            question = "我慢"
+            radio_button_list = ["忍耐", "精神", "自慢"]
+        elif i==1:
+            genre="反対の意味の単語"
+            ans = "減る"
+            question = "増える"
+            radio_button_list = ["減る", "取る", "引く"]
+        elif i==2:
+            genre="似た意味の単語"
+            ans = "ふるさと"
+            question = "田舎"
+            radio_button_list = ["農家", "都会", "ふるさと"]
+        elif i==3:
+            genre="反対の意味の単語"
+            ans = "下がる"
+            question = "上がる"
+            radio_button_list = ["下がる", "止まる", "登る"]
+        elif i==4:
+            genre="似た意味の単語"
+            ans = "いただく"
+            question = "もらう"
+            radio_button_list = ["あげる", "いただく", "買う"]
+        elif i==5:
+            genre="反対の意味の単語"
+            ans = "座る"
+            question = "立つ"
+            radio_button_list = ["降りる", "座る", "寝る"]
+        elif i==6:
+            genre="似た意味の単語"
+            ans = "でかける"
+            question = "行く"
+            radio_button_list = ["話す", "帰る", "でかける"]
+        elif i==7:
+            genre="反対の意味の単語"
+            ans = "寝る"
+            question = "起きる"
+            radio_button_list = ["座る", "冷める", "寝る"]
+        elif i==8:
+            genre="似た意味の単語"
+            ans = "必修"
+            question = "必要"
+            radio_button_list = ["用心", "必修", "用意"]
+        elif i==9:
+            genre="反対の意味の単語"
+            ans = "配る"
+            question = "集める"
+            radio_button_list = ["配る", "もらう", "渡す"]
+        elif i==10:
+            genre="似た意味の単語"
+            ans = "昔"
+            question = "過去"
+            radio_button_list = ["昔", "現在", "未来"]
+        elif i==11:
+            genre="反対の意味の単語"
+            ans = "閉じる"
+            question = "開く"
+            radio_button_list = ["押す", "しまう", "閉じる"]
+        elif i==12:
+            genre="似た意味の単語"
+            ans = "くるむ"
+            question = "包む"
+            radio_button_list = ["しめる", "くるむ", "たたく"]
+        elif i==13:
+            genre="反対の意味の単語"
+            ans = "降りる"
+            question = "乗る"
+            radio_button_list = ["下がる", "座る", "降りる"]
+        elif i==14:
+            genre="似た意味の単語"
+            ans = "農民"
+            question = "百姓"
+            radio_button_list = ["穀物", "百合", "農民"]
+        elif i==15:
+            genre="反対の意味の単語"
+            ans = "拾う"
+            question = "捨てる"
+            radio_button_list = ["拾う", "集める", "ゆずる"]
+        elif i==16:
+            genre="似た意味の単語"
+            ans = "かせぐ"
+            question = "もうける"
+            radio_button_list = ["かせぐ", "経費", "利益"]
+        elif i==17:
+            genre="反対の意味の単語"
+            ans = "吐く"
+            question = "吸う"
+            radio_button_list = ["戻す", "吐く", "押す"]
+        elif i==18:
+            genre="似た意味の単語"
+            ans = "伝達する"
+            question = "送る"
+            radio_button_list = ["かける", "伝達する", "はしる"]
+        elif i==19:
+            genre="反対の意味の単語"
+            ans = "逃げる"
+            question = "追う"
+            radio_button_list = ["攻める", "止まる", "逃げる"]
+        elif i==20:
+            genre="似た意味の単語"
+            ans = "生涯"
+            question = "一生"
+            radio_button_list = ["半生", "生涯", "一期"]
+        elif i==21:
+            genre="反対の意味の単語"
+            ans = "貸す"
+            question = "借りる"
+            radio_button_list = ["もらう", "貸す", "渡す"]
+        elif i==22:
+            genre="似た意味の単語"
+            ans = "先生"
+            question = "教員"
+            radio_button_list = ["先生", "生徒", "リーダー"]
+        elif i==23:
+            genre="反対の意味の単語"
+            ans = "入る"
+            question = "出る"
+            radio_button_list = ["登る", "入る", "しまう"]
 
-    return ans, question, radio_button_list
+    if count == 3:
+        if i==0:
+            genre="似た意味の単語"
+            ans = "経験"
+            question = "体験"
+            radio_button_list = ["試験", "実験", "経験"]
+        elif i==1:
+            genre="反対の意味の単語"
+            ans = "終わる"
+            question = "始める"
+            radio_button_list = ["続ける", "決める", "終わる"]
+        elif i==2:
+            genre="似た意味の単語"
+            ans = "用意"
+            question = "準備"
+            radio_button_list = ["用意", "引越", "開始"]
+        elif i==3:
+            genre="反対の意味の単語"
+            ans = "脱ぐ"
+            question = "着る"
+            radio_button_list = ["履く", "直る", "脱ぐ"]
+        elif i==4:
+            genre="似た意味の単語"
+            ans = "暖かい"
+            question = "温かい"
+            radio_button_list = ["湯気", "あつい", "暖かい"]
+        elif i==5:
+            genre="反対の意味の単語"
+            ans = "売る"
+            question = "買う"
+            radio_button_list = ["渡す", "売る", "払う"]
+        elif i==6:
+            genre="似た意味の単語"
+            ans = "悪党"
+            question = "悪人"
+            radio_button_list = ["悪党", "悪相", "悪僧"]
+        elif i==7:
+            genre="反対の意味の単語"
+            ans = "やわらかい"
+            question = "固い"
+            radio_button_list = ["丸い", "薄い", "やわらかい"]
+        elif i==8:
+            genre="似た意味の単語"
+            ans = "よごれた"
+            question = "きたない"
+            radio_button_list = ["下品な", "らんぼうな", "よごれた"]
+        elif i==9:
+            genre="反対の意味の単語"
+            ans = "敵"
+            question = "味方"
+            radio_button_list = ["他人", "敵", "友人"]
+        elif i==10:
+            genre="似た意味の単語"
+            ans = "干す"
+            question = "乾かす"
+            radio_button_list = ["仕上げる", "干す", "あげる"]
+        elif i==11:
+            genre="反対の意味の単語"
+            ans = "引く"
+            question = "押す"
+            radio_button_list = ["たたく", "引く", "回す"]
+        elif i==12:
+            genre="似た意味の単語"
+            ans = "げんなり"
+            question = "うんざり"
+            radio_button_list = ["うるさい", "げんなり", "辛辣"]
+        elif i==13:
+            genre="反対の意味の単語"
+            ans = "守る"
+            question = "攻める"
+            radio_button_list = ["弱まる", "押す", "守る"]
+        elif i==14:
+            genre="似た意味の単語"
+            ans = "あつまり"
+            question = "よりあい"
+            radio_button_list = ["相談", "もつ", "あつまり"]
+        elif i==15:
+            genre="反対の意味の単語"
+            ans = "出力"
+            question = "入力"
+            radio_button_list = ["出力", "挿入", "開示"]
+        elif i==16:
+            genre="似た意味の単語"
+            ans = "しゃべる"
+            question = "話す"
+            radio_button_list = ["笑う", "歌う", "しゃべる"]
+        elif i==17:
+            genre="反対の意味の単語"
+            ans = "遅い"
+            question = "早い"
+            radio_button_list = ["遅い", "長い", "低い"]
+        elif i==18:
+            genre="似た意味の単語"
+            ans = "見失う"
+            question = "はぐれる"
+            radio_button_list = ["見失う", "歩く", "みる"]
+        elif i==19:
+            genre="反対の意味の単語"
+            ans = "入れる"
+            question = "出す"
+            radio_button_list = ["閉じる", "入れる", "押す"]
+        elif i==20:
+            genre="似た意味の単語"
+            ans = "さわる"
+            question = "ふれる"
+            radio_button_list = ["たたく", "つまむ", "さわる"]
+        elif i==21:
+            genre="反対の意味の単語"
+            ans = "寒い"
+            question = "暑い"
+            radio_button_list = ["上がる", "暖かい", "寒い"]
+        elif i==22:
+            genre="似た意味の単語"
+            ans = "おくびょう"
+            question = "こわい"
+            radio_button_list = ["おくびょう", "強い", "おそろしい"]
+        elif i==23:
+            genre="反対の意味の単語"
+            ans = "薄い"
+            question = "濃い"
+            radio_button_list = ["明るい", "薄い", "弱い"]
+
+
+    return ans, question, radio_button_list, genre
 
 ####切り替えボタン####
 def change():
@@ -1025,23 +1266,29 @@ class Language(tk.Frame):
 
         # # 時間計測用のラベル
         self.time_label = tk.Label(self, text="", font=("", 20))
-        self.time_label.grid(row=0, column=0, columnspan=2)
+        self.time_label.grid(row=0, column=0, columnspan=3)
 
         self.ans_label2 = tk.Label(self, text="", width=10, anchor="w", font=("", 40))
-        self.ans_label2.grid(row=1, column=0)
-        self.q_label = tk.Label(self, text="Q.同義語を選んでください", font=("", 30))
-        self.q_label.grid(row=2, column=0)
+        self.ans_label2.grid(row=2, column=0)
 
         # 問題作成
-        self.ans, self.q, self.radio_button_list = question_language()
+        self.ans, self.q, self.radio_button_list, self.genre = question_language(self.index)
+
+        self.q_label2 = tk.Label(self, text="Q.下の単語と", font=("", 30))
+        self.q_label2.grid(row=3, column=0)
+        self.q_label = tk.Label(self, text=self.genre, font=("", 30), fg="red")
+        self.q_label.grid(row=3, column=1)
+        self.q_label1 = tk.Label(self, text="   を選択してください。", font=("", 30))
+        self.q_label1.grid(row=3, column=2)
         self.ans_label3 = tk.Label(self, text="", width=10, anchor="w", font=("", 15))
-        self.ans_label3.grid(row=3, column=0)
-        self.q_label2 = tk.Label(self, text=self.q, width=10, font=("", 30))
-        self.q_label2.grid(row=4, column=0)
+        self.ans_label3.grid(row=4, column=0)
+        self.q_label2 = tk.Label(self, text=self.q, width=10, font=("", 50, "bold"))
+        self.q_label2.grid(row=5, column=0,columnspan=3)
 
 
         # ウィジェットの作成
         self.radio_value = tk.IntVar()  # ラジオボタンの初期値を0にする
+        self.radio_value.set(4)
 
         # ラジオボタンの作成
         self.radio0 = tk.Radiobutton(
@@ -1083,43 +1330,18 @@ class Language(tk.Frame):
             height=3,
         )
 
-        self.radio3 = tk.Radiobutton(
-            self.master,
-            text=str(self.radio_button_list[3]),  # ラジオボタンの表示名
-            command=self.radio_click,  # クリックされたときに呼ばれるメソッド
-            variable=self.radio_value,  # 選択の状態を設定する
-            value=3,  # ラジオボタンに割り付ける値の設定
-            indicator=0,
-            background="light blue",
-            font=("", 20),
-            width=20,
-            height=3,
-        )
-
-        # ボタンの作成
-        self.button = tk.Button(
-            self.master,
-            text="OK",  # ボタンの表示名
-            command=self.button_click,  # クリックされたときに呼ばれるメソッド
-            relief="solid",
-            state=tk.DISABLED,
-            width=20,
-            height=3,
-            bg="grey",
-        )
-
-        # ボタンクリックに対してキーイベント処理を実装
-        # self.button.bind("<ButtonPress>", self.type_event)
-
         # ウィジェットの設置
         self.radio0.pack()
         self.radio1.pack()
         self.radio2.pack()
-        self.radio3.pack()
-        self.button.pack(expand=1)
 
         self.result_label = tk.Label(self, text="", font=("", 20))
-        self.result_label.grid(row=5, column=0, columnspan=2)
+        self.result_label.grid(row=6, column=0, columnspan=3)
+        self.ans_label3 = tk.Label(self, text="", width=10, anchor="w", font=("", 30))
+        self.ans_label3.grid(row=7, column=0)
+
+        self.question_label1 = tk.Label(self, text="回答数:"+ str(self.index+1) +"/24", font=("", 20))
+        self.question_label1.grid(row=1, column=0, columnspan=3)
 
         self.flg2 = True
 
@@ -1127,91 +1349,10 @@ class Language(tk.Frame):
         # ラジオボタンの値を取得
         value = self.radio_value.get()
         print(f"ラジオボタンの値は {self.radio_button_list[value]} です")
-        #self.answer.configure(text=value)
-        if self.button["state"] == tk.DISABLED:
-            self.button["state"] = tk.NORMAL
-            self.button["bg"] = "white"
 
         # "OK"のボタンを押したかどうか
         self.next = False
 
-    # def button_click(self):
-    #     # 問題を次に移動させるフラグを立てる
-    #     value = self.radio_value.get()
-    #     self.ans_label2 = value
-    #     self.next = True
-
-    # キー入力時のイベント処理
-    def button_click(self):
-        global log
-        value = self.radio_value.get()
-        self.ans_label2 = value
-
-        if self.button["state"] == tk.NORMAL:
-            self.button["state"] = tk.DISABLED
-            self.button["bg"] = "grey"
-
-        # 入力値の答え合わせ
-        print("OKボタンを押しました")
-        print(f"押した答え:{self.ans_label2},本当の答え：{self.ans}")
-        if str(self.ans) == str(self.radio_button_list[self.ans_label2]):
-            # logに書き込み
-            log.logging(
-                situation="集中",
-                action="userがボタン入力",
-                user_input=str(self.radio_button_list[self.ans_label2]),
-                correct=str(self.ans),
-                judge="正解",
-                evaluation="-",
-                eye_ans="-",
-                ans_position="-",
-                eye_correct="-",
-                choice_1="-",
-                choice_2="-",
-                choice_3="-",
-                choice_4="-",
-            )
-
-            self.result_label.configure(text="正解！", fg="red")
-            self.correct_cnt += 1
-        else:
-            # logに書き込み
-            log.logging(
-                situation="集中",
-                action="userがボタン入力",
-                user_input=str(self.radio_button_list[self.ans_label2]),
-                correct=str(self.ans),
-                judge="不正解",
-                evaluation="-",
-                eye_ans="-",
-                ans_position="-",
-                eye_correct="-",
-                choice_1="-",
-                choice_2="-",
-                choice_3="-",
-                choice_4="-",
-            )
-
-            self.result_label.configure(text="残念！", fg="blue")
-
-        # 次の問題を出題
-        self.index += 1
-        self.ans, q, radio_button_list = QUESTION()
-        self.q_label2.configure(text=q)
-        self.radio0.configure(
-            text=str(radio_button_list[0]), value=str(radio_button_list[0])
-        )
-        self.radio1.configure(
-            text=str(radio_button_list[1]), value=str(radio_button_list[1])
-        )
-        self.radio2.configure(
-            text=str(radio_button_list[2]), value=str(radio_button_list[2])
-        )
-        self.radio3.configure(
-            text=str(radio_button_list[3]), value=str(radio_button_list[3])
-        )
-        # "OK"のボタンを押したかどうか
-        self.next = False
 
     def timer(self):
         self.second = 0
@@ -1221,44 +1362,125 @@ class Language(tk.Frame):
             self.time_label.configure(text=f"経過時間：{self.second}秒")
             time.sleep(1)
 
-            # 2分経ったら
-            if self.second == interval:
-                # logに書き込み
-                log.logging(
-                    situation="言語課題の終了",
-                    action="-",
-                    user_input="-",
-                    correct="-",
-                    judge="-",
-                    evaluation="-",
-                    eye_ans="-",
-                    ans_position="-",
-                    eye_correct="-",
-                    choice_1="-",
-                    choice_2="-",
-                    choice_3="-",
-                    choice_4="-",
+            if self.second == 5:
+                global log
+                value = self.radio_value.get()
+                self.ans_label2 = value
+
+                print(f"押した答え:{self.ans_label2},本当の答え：{self.ans}")
+                if self.ans_label2 == 4:
+                    # logに書き込み
+                    log.logging(
+                        situation="集中",
+                        action="問題遷移",
+                        user_input="無回答",
+                        correct=str(self.ans),
+                        judge="不正解",
+                        evaluation="-",
+                        eye_ans="-",
+                        ans_position="-",
+                        eye_correct="-",
+                        choice_1="-",
+                        choice_2="-",
+                        choice_3="-",
+                        choice_4="-"
+                    )
+                elif str(self.ans) == str(self.radio_button_list[self.ans_label2]):
+                    # logに書き込み
+                    log.logging(
+                        situation="集中",
+                        action="問題遷移",
+                        user_input=str(self.radio_button_list[self.ans_label2]),
+                        correct=str(self.ans),
+                        judge="正解",
+                        evaluation="-",
+                        eye_ans="-",
+                        ans_position="-",
+                        eye_correct="-",
+                        choice_1="-",
+                        choice_2="-",
+                        choice_3="-",
+                        choice_4="-",
+                    )
+
+                    self.result_label.configure(text="正解！", fg="red")
+                    self.correct_cnt += 1
+                else:
+                    # logに書き込み
+                    log.logging(
+                        situation="集中",
+                        action="問題遷移",
+                        user_input=str(self.radio_button_list[self.ans_label2]),
+                        correct=str(self.ans),
+                        judge="不正解",
+                        evaluation="-",
+                        eye_ans="-",
+                        ans_position="-",
+                        eye_correct="-",
+                        choice_1="-",
+                        choice_2="-",
+                        choice_3="-",
+                        choice_4="-",
+                    )
+
+                    self.result_label.configure(text="残念！", fg="blue")
+
+                # 次の問題を出題
+                self.index += 1
+                print(self.index)
+                if self.index == 24:
+                    # logに書き込み
+                    log.logging(
+                        situation="計算課題の終了",
+                        action="-",
+                        user_input="-",
+                        correct="-",
+                        judge="-",
+                        evaluation="-",
+                        eye_ans="-",
+                        ans_position="-",
+                        eye_correct="-",
+                        choice_1="-",
+                        choice_2="-",
+                        choice_3="-",
+                        choice_4="-",
+                    )
+
+                    self.q_label2.configure(text="")
+                    messagebox.showinfo(
+                        "リザルト",
+                        f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。",
+                    )
+
+                    self.second = 0
+                    self.destroy()
+                    self.master.destroy()
+
+                    global count
+                    count += 1
+                    questionnaire()
+                    return 0
+
+                self.ans, self.q, self.radio_button_list, self.genre = question_language(self.index)
+                self.q_label2.configure(text=self.q)
+                self.radio_value.set(4)
+
+                if self.genre == "似た意味の単語":
+                    self.q_label.configure(text=self.genre, fg="red")
+                else:
+                    self.q_label.configure(text=self.genre, fg="blue")
+
+                self.radio0.configure(
+                    text=str(self.radio_button_list[0]), variable = self.radio_value
                 )
-
-                self.q_label2.configure(text="")
-                messagebox.showinfo(
-                    "リザルト",
-                    f"あなたのスコアは{self.correct_cnt}/{self.index}問正解です。\nクリアタイムは{self.second}秒です。",
+                self.radio1.configure(
+                    text=str(self.radio_button_list[1]), variable = self.radio_value
                 )
-
-                # logに書き込み
-                # root.destroy()
-
-                # quit_me(root)
-                # sys.exit(0)
+                self.radio2.configure(
+                    text=str(self.radio_button_list[2]), variable = self.radio_value
+                )
+                self.question_label1.configure(text="回答数:"+ str(self.index+1) +"/24")
                 self.second = 0
-                self.destroy()
-                self.master.destroy()
-
-                global count
-                count += 1
-                questionnaire()
-                return 0
 
 
 # log
