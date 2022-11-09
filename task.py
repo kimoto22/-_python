@@ -19,6 +19,9 @@ global interval
 interval = 120
 relax_interval = 120
 
+language_time = 10
+count_program = 12
+
 scr_w, scr_h = pag.size()
 print("画面サイズの幅：", scr_w)
 print("画面サイズの高さ：", scr_h)
@@ -1204,7 +1207,7 @@ class Language(tk.Frame):
         # 各種ウィジェットの作成
         self.label1_frame_app = tk.Label(self.master, text="言語課題", font=("", 40))#,fg="red")
         self.label2_frame_app = tk.Label(self.master, text="4択のうち正しい答えを選択し決定してください", font=("", 40))
-        self.label3_frame_app = tk.Label(self.master, text="1問あたり制限時間5秒で答えてください。全部で24問です。", font=("", 30))
+        self.label3_frame_app = tk.Label(self.master, text="1問あたり10秒以内に答えてください。全部で12問です。", font=("", 30))
         self.button_change_frame_app = tk.Button(
             self.master, text="課題に進む", font=("", 40), bg="grey", command=lambda: self.rocate(),relief="solid"
         )
@@ -1337,10 +1340,10 @@ class Language(tk.Frame):
 
         self.result_label = tk.Label(self, text="", font=("", 20))
         self.result_label.grid(row=6, column=0, columnspan=3)
-        self.ans_label3 = tk.Label(self, text="", width=10, anchor="w", font=("", 30))
+        self.ans_label3 = tk.Label(self, text="", width=10, anchor="w", font=("", 50))
         self.ans_label3.grid(row=7, column=0)
 
-        self.question_label1 = tk.Label(self, text="回答数:"+ str(self.index+1) +"/24", font=("", 20))
+        self.question_label1 = tk.Label(self, text="回答数:"+ str(self.index+1) + "/" + str(count_program), font=("", 20))
         self.question_label1.grid(row=1, column=0, columnspan=3)
 
         self.flg2 = True
@@ -1362,7 +1365,7 @@ class Language(tk.Frame):
             self.time_label.configure(text=f"経過時間：{self.second}秒")
             time.sleep(1)
 
-            if self.second == 5:
+            if self.second == language_time:
                 global log
                 value = self.radio_value.get()
                 self.ans_label2 = value
@@ -1428,7 +1431,7 @@ class Language(tk.Frame):
                 # 次の問題を出題
                 self.index += 1
                 print(self.index)
-                if self.index == 24:
+                if self.index == count_program:
                     # logに書き込み
                     log.logging(
                         situation="計算課題の終了",
