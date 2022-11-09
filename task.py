@@ -12,13 +12,10 @@ from tkinter import messagebox
 import pyautogui as pag
 import os
 os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
-
-
 global interval
 
 interval = 120
 relax_interval = 120
-
 language_time = 10
 count_program = 12
 
@@ -29,7 +26,30 @@ print("画面サイズの高さ：", scr_h)
 video = video.Video()
 audio = audio.Audio()
 
-task_count=5
+task_count = 5
+
+#辞書
+#{問題番号:[問題内容,答え,問題,選択肢]}
+question1 = {
+    1: ["似た意味の単語", "忍耐", "我慢", ["忍耐", "精神", "自慢"]], 2: ["反対の意味の単語", "減る", "増える", ["減る", "取る", "引く"]], 3: ["似た意味の単語", "ふるさと", "田舎", ["農家", "都会", "ふるさと"]],
+    4: ["反対の意味の単語", "下がる", "上がる", ["下がる", "止まる", "登る"]], 5: ["似た意味の単語", "いただく", "もらう", ["あげる", "いただく", "買う"]], 6: ["反対の意味の単語", "座る", "立つ", ["降りる", "座る", "寝る"]],
+    7: ["似た意味の単語", "でかける", "行く", ["話す", "帰る", "でかける"]], 8: ["反対の意味の単語", "寝る", "起きる", ["座る", "冷める", "寝る"]], 9: ["似た意味の単語", "必修", "必要", ["用心", "必修", "用意"]],
+    10: ["反対の意味の単語", "配る", "集める", ["配る", "もらう", "渡す"]], 11: ["似た意味の単語", "昔", "過去", ["昔", "現在", "未来"]], 12: ["反対の意味の単語", "閉じる", "開く", ["押す", "しまう", "閉じる"]],
+    13: ["似た意味の単語", "くるむ", "包む", ["しめる", "くるむ", "たたく"]], 14: ["反対の意味の単語", "降りる", "乗る", ["下がる", "座る", "降りる"]], 15: ["似た意味の単語", "農民", "百姓", ["穀物", "百合", "農民"]],
+    16: ["反対の意味の単語", "拾う", "捨てる", ["拾う", "集める", "ゆずる"]], 17: ["似た意味の単語", "かせぐ", "もうける", ["かせぐ", "経費", "利益"]], 18: ["反対の意味の単語", "吐く", "吸う", ["戻す", "吐く", "押す"]],
+    19: ["似た意味の単語", "伝達する", "送る", ["かける", "伝達する", "はしる"]],20: ["反対の意味の単語", "逃げる", "追う", ["攻める", "止まる", "逃げる"]], 21: ["似た意味の単語", "生涯", "一生", ["半生", "生涯", "一期"]],
+    22: ["反対の意味の単語", "貸す", "借りる", ["もらう", "貸す", "渡す"]], 23: ["似た意味の単語", "先生", "教員", ["先生", "生徒", "リーダー"]], 24: ["反対の意味の単語", "入る", "出る", ["登る", "入る", "しまう"]],
+}
+question2 = {
+    1: ["似た意味の単語", "経験", "体験", ["試験", "実験", "経験"]], 2: ["反対の意味の単語", "終わる", "始める", ["続ける", "決める", "終わる"]], 3: ["似た意味の単語", "用意", "準備", ["用意", "引越", "開始"]],
+    4: ["反対の意味の単語", "脱ぐ", "着る", ["履く", "直る", "脱ぐ"]], 5: ["似た意味の単語", "暖かい", "温かい", ["湯気", "あつい", "暖かい"]], 6: ["反対の意味の単語", "売る", "買う", ["渡す", "売る", "払う"]],
+    7: ["似た意味の単語", "悪党", "悪人", ["悪党", "悪相", "悪僧"]], 8: ["反対の意味の単語", "やわらかい", "固い", ["丸い", "薄い", "やわらかい"]], 9: ["似た意味の単語", "よごれた", "きたない", ["下品な", "らんぼうな", "よごれた"]],
+    10: ["反対の意味の単語", "敵", "味方", ["他人", "敵", "友人"]], 11: ["似た意味の単語", "干す", "乾かす", ["仕上げる", "干す", "あげる"]], 12: ["反対の意味の単語", "守る", "攻める", ["弱まる", "押す", "守る"]],
+    13: ["似た意味の単語", "あつまり", "よりあい", ["相談", "もつ", "あつまり"]], 14: ["反対の意味の単語", "出力", "入力", ["出力", "挿入", "開示"]], 15: ["似た意味の単語", "しゃべる", "話す", ["笑う", "歌う", "しゃべる"]],
+    16: ["反対の意味の単語", "遅い", "早い", ["遅い", "長い", "低い"]], 17: ["似た意味の単語", "見失う", "はぐれる", ["見失う", "歩く", "みる"]], 18: ["反対の意味の単語", "入れる", "出す", ["閉じる", "入れる", "押す"]],
+    19: ["似た意味の単語", "さわる", "ふれる", ["たたく", "つまむ", "さわる"]],20: ["反対の意味の単語", "寒い", "暑い", ["上がる", "暖かい", "寒い"]], 21: ["似た意味の単語", "おくびょう", "こわい", ["おくびょう", "強い", "おそろしい"]],
+    22: ["反対の意味の単語", "薄い", "濃い", ["明るい", "薄い", "弱い"]], 23: ["似た意味の単語", "げんなり", "うんざり", ["うるさい", "げんなり", "辛辣"]], 24: ["反対の意味の単語", "引く", "押す", ["たたく", "引く", "回す"]],
+}
 
 def click_close():
     if messagebox.askokcancel("確認", "本当に閉じていいですか？"):
@@ -59,251 +79,30 @@ def QUESTION():
 
     return ans, question, radio_button_list
 
-def question_language(i):
+def question_language():
 
     if count == 1:
-        if i==0:
-            genre="似た意味の単語"
-            ans = "忍耐"
-            question = "我慢"
-            radio_button_list = ["忍耐", "精神", "自慢"]
-        elif i==1:
-            genre="反対の意味の単語"
-            ans = "減る"
-            question = "増える"
-            radio_button_list = ["減る", "取る", "引く"]
-        elif i==2:
-            genre="似た意味の単語"
-            ans = "ふるさと"
-            question = "田舎"
-            radio_button_list = ["農家", "都会", "ふるさと"]
-        elif i==3:
-            genre="反対の意味の単語"
-            ans = "下がる"
-            question = "上がる"
-            radio_button_list = ["下がる", "止まる", "登る"]
-        elif i==4:
-            genre="似た意味の単語"
-            ans = "いただく"
-            question = "もらう"
-            radio_button_list = ["あげる", "いただく", "買う"]
-        elif i==5:
-            genre="反対の意味の単語"
-            ans = "座る"
-            question = "立つ"
-            radio_button_list = ["降りる", "座る", "寝る"]
-        elif i==6:
-            genre="似た意味の単語"
-            ans = "でかける"
-            question = "行く"
-            radio_button_list = ["話す", "帰る", "でかける"]
-        elif i==7:
-            genre="反対の意味の単語"
-            ans = "寝る"
-            question = "起きる"
-            radio_button_list = ["座る", "冷める", "寝る"]
-        elif i==8:
-            genre="似た意味の単語"
-            ans = "必修"
-            question = "必要"
-            radio_button_list = ["用心", "必修", "用意"]
-        elif i==9:
-            genre="反対の意味の単語"
-            ans = "配る"
-            question = "集める"
-            radio_button_list = ["配る", "もらう", "渡す"]
-        elif i==10:
-            genre="似た意味の単語"
-            ans = "昔"
-            question = "過去"
-            radio_button_list = ["昔", "現在", "未来"]
-        elif i==11:
-            genre="反対の意味の単語"
-            ans = "閉じる"
-            question = "開く"
-            radio_button_list = ["押す", "しまう", "閉じる"]
-        elif i==12:
-            genre="似た意味の単語"
-            ans = "くるむ"
-            question = "包む"
-            radio_button_list = ["しめる", "くるむ", "たたく"]
-        elif i==13:
-            genre="反対の意味の単語"
-            ans = "降りる"
-            question = "乗る"
-            radio_button_list = ["下がる", "座る", "降りる"]
-        elif i==14:
-            genre="似た意味の単語"
-            ans = "農民"
-            question = "百姓"
-            radio_button_list = ["穀物", "百合", "農民"]
-        elif i==15:
-            genre="反対の意味の単語"
-            ans = "拾う"
-            question = "捨てる"
-            radio_button_list = ["拾う", "集める", "ゆずる"]
-        elif i==16:
-            genre="似た意味の単語"
-            ans = "かせぐ"
-            question = "もうける"
-            radio_button_list = ["かせぐ", "経費", "利益"]
-        elif i==17:
-            genre="反対の意味の単語"
-            ans = "吐く"
-            question = "吸う"
-            radio_button_list = ["戻す", "吐く", "押す"]
-        elif i==18:
-            genre="似た意味の単語"
-            ans = "伝達する"
-            question = "送る"
-            radio_button_list = ["かける", "伝達する", "はしる"]
-        elif i==19:
-            genre="反対の意味の単語"
-            ans = "逃げる"
-            question = "追う"
-            radio_button_list = ["攻める", "止まる", "逃げる"]
-        elif i==20:
-            genre="似た意味の単語"
-            ans = "生涯"
-            question = "一生"
-            radio_button_list = ["半生", "生涯", "一期"]
-        elif i==21:
-            genre="反対の意味の単語"
-            ans = "貸す"
-            question = "借りる"
-            radio_button_list = ["もらう", "貸す", "渡す"]
-        elif i==22:
-            genre="似た意味の単語"
-            ans = "先生"
-            question = "教員"
-            radio_button_list = ["先生", "生徒", "リーダー"]
-        elif i==23:
-            genre="反対の意味の単語"
-            ans = "入る"
-            question = "出る"
-            radio_button_list = ["登る", "入る", "しまう"]
+        print(question1)
+        num = random.choice(list(question1))
+        print(num)
+        print(question1[num])
+        ans = question1[num][1]
+        question = question1[num][2]
+        radio_button_list = question1[num][3]
+        genre = question1[num][0]
+        del question1[num]
 
     if count == 3:
-        if i==0:
-            genre="似た意味の単語"
-            ans = "経験"
-            question = "体験"
-            radio_button_list = ["試験", "実験", "経験"]
-        elif i==1:
-            genre="反対の意味の単語"
-            ans = "終わる"
-            question = "始める"
-            radio_button_list = ["続ける", "決める", "終わる"]
-        elif i==2:
-            genre="似た意味の単語"
-            ans = "用意"
-            question = "準備"
-            radio_button_list = ["用意", "引越", "開始"]
-        elif i==3:
-            genre="反対の意味の単語"
-            ans = "脱ぐ"
-            question = "着る"
-            radio_button_list = ["履く", "直る", "脱ぐ"]
-        elif i==4:
-            genre="似た意味の単語"
-            ans = "暖かい"
-            question = "温かい"
-            radio_button_list = ["湯気", "あつい", "暖かい"]
-        elif i==5:
-            genre="反対の意味の単語"
-            ans = "売る"
-            question = "買う"
-            radio_button_list = ["渡す", "売る", "払う"]
-        elif i==6:
-            genre="似た意味の単語"
-            ans = "悪党"
-            question = "悪人"
-            radio_button_list = ["悪党", "悪相", "悪僧"]
-        elif i==7:
-            genre="反対の意味の単語"
-            ans = "やわらかい"
-            question = "固い"
-            radio_button_list = ["丸い", "薄い", "やわらかい"]
-        elif i==8:
-            genre="似た意味の単語"
-            ans = "よごれた"
-            question = "きたない"
-            radio_button_list = ["下品な", "らんぼうな", "よごれた"]
-        elif i==9:
-            genre="反対の意味の単語"
-            ans = "敵"
-            question = "味方"
-            radio_button_list = ["他人", "敵", "友人"]
-        elif i==10:
-            genre="似た意味の単語"
-            ans = "干す"
-            question = "乾かす"
-            radio_button_list = ["仕上げる", "干す", "あげる"]
-        elif i==11:
-            genre="反対の意味の単語"
-            ans = "引く"
-            question = "押す"
-            radio_button_list = ["たたく", "引く", "回す"]
-        elif i==12:
-            genre="似た意味の単語"
-            ans = "げんなり"
-            question = "うんざり"
-            radio_button_list = ["うるさい", "げんなり", "辛辣"]
-        elif i==13:
-            genre="反対の意味の単語"
-            ans = "守る"
-            question = "攻める"
-            radio_button_list = ["弱まる", "押す", "守る"]
-        elif i==14:
-            genre="似た意味の単語"
-            ans = "あつまり"
-            question = "よりあい"
-            radio_button_list = ["相談", "もつ", "あつまり"]
-        elif i==15:
-            genre="反対の意味の単語"
-            ans = "出力"
-            question = "入力"
-            radio_button_list = ["出力", "挿入", "開示"]
-        elif i==16:
-            genre="似た意味の単語"
-            ans = "しゃべる"
-            question = "話す"
-            radio_button_list = ["笑う", "歌う", "しゃべる"]
-        elif i==17:
-            genre="反対の意味の単語"
-            ans = "遅い"
-            question = "早い"
-            radio_button_list = ["遅い", "長い", "低い"]
-        elif i==18:
-            genre="似た意味の単語"
-            ans = "見失う"
-            question = "はぐれる"
-            radio_button_list = ["見失う", "歩く", "みる"]
-        elif i==19:
-            genre="反対の意味の単語"
-            ans = "入れる"
-            question = "出す"
-            radio_button_list = ["閉じる", "入れる", "押す"]
-        elif i==20:
-            genre="似た意味の単語"
-            ans = "さわる"
-            question = "ふれる"
-            radio_button_list = ["たたく", "つまむ", "さわる"]
-        elif i==21:
-            genre="反対の意味の単語"
-            ans = "寒い"
-            question = "暑い"
-            radio_button_list = ["上がる", "暖かい", "寒い"]
-        elif i==22:
-            genre="似た意味の単語"
-            ans = "おくびょう"
-            question = "こわい"
-            radio_button_list = ["おくびょう", "強い", "おそろしい"]
-        elif i==23:
-            genre="反対の意味の単語"
-            ans = "薄い"
-            question = "濃い"
-            radio_button_list = ["明るい", "薄い", "弱い"]
+        print(question2)
+        num = random.choice(list(question2))
+        print(num)
+        print(question2[num])
+        ans = question2[num][1]
+        question = question2[num][2]
+        radio_button_list = question2[num][3]
+        genre = question2[num][0]
+        del question2[num]
+
 
 
     return ans, question, radio_button_list, genre
@@ -1275,7 +1074,7 @@ class Language(tk.Frame):
         self.ans_label2.grid(row=2, column=0)
 
         # 問題作成
-        self.ans, self.q, self.radio_button_list, self.genre = question_language(self.index)
+        self.ans, self.q, self.radio_button_list, self.genre = question_language()
 
         self.q_label2 = tk.Label(self, text="Q.下の単語と", font=("", 30))
         self.q_label2.grid(row=3, column=0)
@@ -1343,7 +1142,7 @@ class Language(tk.Frame):
         self.ans_label3 = tk.Label(self, text="", width=10, anchor="w", font=("", 50))
         self.ans_label3.grid(row=7, column=0)
 
-        self.question_label1 = tk.Label(self, text="回答数:"+ str(self.index+1) + "/" + str(count_program), font=("", 20))
+        self.question_label1 = tk.Label(self, text="回答数:"+ str(self.index) + "/" + str(count_program), font=("", 20))
         self.question_label1.grid(row=1, column=0, columnspan=3)
 
         self.flg2 = True
@@ -1464,7 +1263,7 @@ class Language(tk.Frame):
                     questionnaire()
                     return 0
 
-                self.ans, self.q, self.radio_button_list, self.genre = question_language(self.index)
+                self.ans, self.q, self.radio_button_list, self.genre = question_language()
                 self.q_label2.configure(text=self.q)
                 self.radio_value.set(4)
 
@@ -1482,7 +1281,7 @@ class Language(tk.Frame):
                 self.radio2.configure(
                     text=str(self.radio_button_list[2]), variable = self.radio_value
                 )
-                self.question_label1.configure(text="回答数:"+ str(self.index+1) +"/24")
+                self.question_label1.configure(text="回答数:"+ str(self.index) +"/" + str(count_program))
                 self.second = 0
 
 
