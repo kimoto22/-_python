@@ -1137,8 +1137,8 @@ class Language(tk.Frame):
         self.radio1.pack()
         self.radio2.pack()
 
-        self.result_label = tk.Label(self, text="", font=("", 20))
-        self.result_label.grid(row=6, column=0, columnspan=3)
+        #self.result_label = tk.Label(self, text="", font=("", 20))
+        #self.result_label.grid(row=6, column=0, columnspan=3)
         self.ans_label3 = tk.Label(self, text="", width=10, anchor="w", font=("", 50))
         self.ans_label3.grid(row=7, column=0)
 
@@ -1205,7 +1205,7 @@ class Language(tk.Frame):
                         choice_4="-",
                     )
 
-                    self.result_label.configure(text="正解！", fg="red")
+                    #self.result_label.configure(text="正解！", fg="red")
                     self.correct_cnt += 1
                 else:
                     # logに書き込み
@@ -1225,7 +1225,7 @@ class Language(tk.Frame):
                         choice_4="-",
                     )
 
-                    self.result_label.configure(text="残念！", fg="blue")
+                    #self.result_label.configure(text="残念！", fg="blue")
 
                 # 次の問題を出題
                 self.index += 1
