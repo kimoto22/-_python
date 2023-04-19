@@ -1078,7 +1078,10 @@ class Language(tk.Frame):
 
         self.q_label2 = tk.Label(self, text="Q.下の単語と", font=("", 30))
         self.q_label2.grid(row=3, column=0)
-        self.q_label = tk.Label(self, text=self.genre, font=("", 30), fg="red")
+        if self.genre == "似た意味の単語":
+            self.q_label = tk.Label(self, text=self.genre, font=("", 30), fg="red")
+        else:
+            self.q_label = tk.Label(self, text=self.genre, font=("", 30), fg="blue")
         self.q_label.grid(row=3, column=1)
         self.q_label1 = tk.Label(self, text="   を選択してください。", font=("", 30))
         self.q_label1.grid(row=3, column=2)
@@ -1086,7 +1089,6 @@ class Language(tk.Frame):
         self.ans_label3.grid(row=4, column=0)
         self.q_label2 = tk.Label(self, text=self.q, width=10, font=("", 50, "bold"))
         self.q_label2.grid(row=5, column=0,columnspan=3)
-
 
         # ウィジェットの作成
         self.radio_value = tk.IntVar()  # ラジオボタンの初期値を0にする
